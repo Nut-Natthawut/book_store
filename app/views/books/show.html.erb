@@ -1,0 +1,16 @@
+<main class="page">
+  <h1><%= @book.title %></h1>
+  <%= tag.p flash[:notice], class: "notice", role: "status" if flash[:notice] %>
+  <p>ผู้เขียน: <%= @book.author %></p>
+  <p>หมวดหมู่: <%= @book.category.name %></p>
+  <p><%= @book.description %></p>
+  <p>ราคา: <%= number_to_currency(@book.price, unit: "฿") %></p>
+  <% if authenticated? %>
+    <div class="actions">
+      <%= link_to "แก้ไขหนังสือ", edit_book_path(@book) %>
+      <%= button_to "ลบหนังสือ", book_path(@book), method: :delete,
+            form: { data: { turbo_confirm: "ยืนยันการลบหนังสือเล่มนี้?" } } %>
+    </div>
+  <% end %>
+  <%= link_to "กลับหน้ารายการ", root_path %>
+</main>

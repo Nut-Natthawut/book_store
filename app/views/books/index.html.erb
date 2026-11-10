@@ -1,0 +1,26 @@
+<main class="page">
+  <h1>หนังสือทั้งหมด</h1>
+  <%= tag.p flash[:notice], class: "notice", role: "status" if flash[:notice] %>
+
+  <nav aria-label="บัญชีผู้ใช้">
+    <% if authenticated? %>
+      <p><%= Current.user.email_address %></p>
+      <%= link_to "เพิ่มหนังสือ", new_book_path %>
+      <%= button_to "ออกจากระบบ", session_path, method: :delete %>
+    <% else %>
+      <%= link_to "เข้าสู่ระบบ", new_session_path %>
+    <% end %>
+  </nav>
+
+  <% @books.each do |book| %>
+    <article class="book">
+      <h2><%= link_to book.title, book_path(book) %></h2>
+      <p>ผู้เขียน: <%= book.author %></p>
+      <p>ราคา: <%= number_to_currency(book.price, unit: "฿") %></p>
+    </article>
+  <% end %>
+
+  <% if @books.empty? %>
+    <p>ยังไม่มีหนังสือ</p>
+  <% end %>
+</main>
