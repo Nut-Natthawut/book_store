@@ -51,3 +51,7 @@ a:focus-visible, input:focus-visible, button:focus-visible, textarea:focus-visib
 .notice { color: #166534; margin-bottom: 16px; }
 .book { padding: 20px 0; border-bottom: 1px solid #d6d3d1; }
 .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; margin: 20px 0; }
+.categories { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0; }
+.category { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 16px; border: 1px solid #78716c; border-radius: 6px; text-decoration: none; }
+.category:hover { background: #e7e5e4; }
+.category[aria-current="page"] { background: #1c1917; color: white; }

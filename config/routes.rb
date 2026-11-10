@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   resource :session
   resources :books
+  get "admin", to: "admin#index", as: :admin
 
   get "up" => "rails/health#show", as: :rails_health_check
 end

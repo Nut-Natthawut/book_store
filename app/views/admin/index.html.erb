@@ -1,0 +1,19 @@
+<main class="page">
+  <h1>จัดการหนังสือ — Admin</h1>
+  <div class="actions">
+    <%= link_to "เพิ่มหนังสือ", new_book_path %>
+    <%= link_to "กลับหน้ารายการ", books_path %>
+  </div>
+
+  <% @books.each do |book| %>
+    <article class="book">
+      <h2><%= link_to book.title, book_path(book) %></h2>
+      <p>หมวดหมู่: <%= book.category.name %></p>
+      <%= render "books/actions", book: book %>
+    </article>
+  <% end %>
+
+  <% if @books.empty? %>
+    <p>ยังไม่มีหนังสือ</p>
+  <% end %>
+</main>

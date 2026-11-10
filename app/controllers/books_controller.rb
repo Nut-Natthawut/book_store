@@ -1,10 +1,20 @@
 class BooksController < ApplicationController
   allow_unauthenticated_access only: [:index, :show]
+  before_action :require_admin, except: [:index, :show]
   before_action :set_book, only: [:show, :edit, :update, :destroy]
   before_action :set_categories, only: [:new, :create, :edit, :update]
 
   def index
-    @books = Book.all
+    @categories = Category.order(:name)
+    @category_id = params[:category_id].presence
+    @query = params[:q].to_s.strip
+
+    @books = Book.order(:title)
+    @books = @books.where(category_id: @category_id) if @category_id.present?
+
+    if @query.present?
+      @books = @books.where("title ILIKE ?", "%#{Book.sanitize_sql_like(@query)}%")
+    end
   end
 
   def show

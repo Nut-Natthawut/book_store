@@ -5,10 +5,31 @@
   <nav aria-label="บัญชีผู้ใช้">
     <% if authenticated? %>
       <p><%= Current.user.email_address %></p>
-      <%= link_to "เพิ่มหนังสือ", new_book_path %>
+      <% if Current.user.admin? %>
+        <%= link_to "หน้าจัดการ Admin", admin_path %>
+        <%= link_to "เพิ่มหนังสือ", new_book_path %>
+      <% end %>
       <%= button_to "ออกจากระบบ", session_path, method: :delete %>
     <% else %>
       <%= link_to "เข้าสู่ระบบ", new_session_path %>
+    <% end %>
+  </nav>
+
+  <%= form_with url: books_path, method: :get do |form| %>
+    <%= form.hidden_field :category_id, value: @category_id if @category_id %>
+    <div class="field">
+      <%= form.label :q, "ค้นหาชื่อหนังสือ" %>
+      <%= form.search_field :q, value: @query %>
+    </div>
+    <%= form.submit "ค้นหา" %>
+  <% end %>
+
+  <nav class="categories" aria-label="หมวดหมู่หนังสือ">
+    <%= link_to "ทั้งหมด", books_path(q: @query.presence),
+          class: "category", aria: { current: @category_id.nil? ? "page" : nil } %>
+    <% @categories.each do |category| %>
+      <%= link_to category.name, books_path(category_id: category.id, q: @query.presence),
+            class: "category", aria: { current: @category_id == category.id.to_s ? "page" : nil } %>
     <% end %>
   </nav>
 
@@ -21,6 +42,6 @@
   <% end %>
 
   <% if @books.empty? %>
-    <p>ยังไม่มีหนังสือ</p>
+    <p>ไม่พบหนังสือ</p>
   <% end %>
 </main>
