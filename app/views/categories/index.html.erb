@@ -1,0 +1,25 @@
+<main class="page">
+  <h1>จัดการหมวดหมู่</h1>
+  <%= tag.p flash[:notice], class: "notice", role: "status" if flash[:notice] %>
+  <%= tag.p flash[:alert], class: "alert", role: "alert" if flash[:alert] %>
+
+  <div class="actions">
+    <%= link_to "เพิ่มหมวดหมู่", new_category_path %>
+    <%= link_to "กลับหน้า Admin", admin_path %>
+  </div>
+
+  <% @categories.each do |category| %>
+    <article class="book">
+      <h2><%= category.name %></h2>
+      <div class="actions">
+        <%= link_to "แก้ไข", edit_category_path(category) %>
+        <%= button_to "ลบ", category_path(category), method: :delete,
+              form: { data: { turbo_confirm: "ยืนยันการลบหมวดหมู่นี้?" } } %>
+      </div>
+    </article>
+  <% end %>
+
+  <% if @categories.empty? %>
+    <p>ยังไม่มีหมวดหมู่</p>
+  <% end %>
+</main>
