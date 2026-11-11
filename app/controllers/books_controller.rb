@@ -1,8 +1,8 @@
 class BooksController < ApplicationController
-  allow_unauthenticated_access only: [:index, :show]
-  before_action :require_admin, except: [:index, :show]
-  before_action :set_book, only: [:show, :edit, :update, :destroy]
-  before_action :set_categories, only: [:new, :create, :edit, :update]
+  allow_unauthenticated_access only: [ :index, :show ]
+  before_action :require_admin, except: [ :index, :show ]
+  before_action :find_book, only: [ :show, :edit, :update, :destroy ]
+  before_action :load_categories, only: [ :new, :create, :edit, :update ]
 
   def index
     @categories = Category.order(:name)
@@ -52,11 +52,11 @@ class BooksController < ApplicationController
 
   private
 
-  def set_book
+  def find_book
     @book = Book.find(params[:id])
   end
 
-  def set_categories
+  def load_categories
     @categories = Category.order(:name)
   end
 
