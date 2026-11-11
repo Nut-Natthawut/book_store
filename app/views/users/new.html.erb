@@ -1,0 +1,41 @@
+<main class="page">
+  <h1>สร้างผู้ใช้</h1>
+  <%= tag.p flash[:notice], class: "notice", role: "status" if flash[:notice] %>
+
+  <%= form_with model: @user do |form| %>
+    <% if @user.errors.any? %>
+      <div class="alert" role="alert">
+        <p>สร้างผู้ใช้ไม่ได้ กรุณาตรวจสอบข้อมูล:</p>
+        <ul>
+          <% @user.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="field">
+      <%= form.label :email_address, "อีเมล" %>
+      <%= form.email_field :email_address, required: true, autocomplete: "off" %>
+    </div>
+
+    <div class="field">
+      <%= form.label :password, "รหัสผ่าน" %>
+      <%= form.password_field :password, required: true, autocomplete: "new-password", maxlength: 72 %>
+    </div>
+
+    <div class="field">
+      <%= form.label :password_confirmation, "ยืนยันรหัสผ่าน" %>
+      <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", maxlength: 72 %>
+    </div>
+
+    <div class="field">
+      <%= form.label :role, "สิทธิ์ผู้ใช้" %>
+      <%= form.select :role, [["Customer", "customer"], ["Admin", "admin"]] %>
+    </div>
+
+    <%= form.submit "สร้างผู้ใช้", data: { turbo_submits_with: "กำลังบันทึก…" } %>
+  <% end %>
+
+  <%= link_to "กลับหน้า Admin", admin_path %>
+</main>
