@@ -3,6 +3,7 @@ class BooksController < ApplicationController
   before_action :require_admin, except: [ :index, :show ]
   before_action :find_book, only: [ :show, :edit, :update, :destroy ]
   before_action :load_categories, only: [ :new, :create, :edit, :update ]
+  before_action :load_markets, only: [ :new, :create, :edit, :update ]
 
   def index
     @categories = Category.order(:name)
@@ -61,6 +62,10 @@ class BooksController < ApplicationController
   end
 
   def book_params
-    params.require(:book).permit(:title, :author, :description, :price, :category_id)
+    params.require(:book).permit(:title, :author, :description, :price, :category_id, market_ids: [])
+  end
+
+  def load_markets
+    @markets = Market.order(:name)
   end
 end

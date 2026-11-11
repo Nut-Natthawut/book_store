@@ -35,5 +35,18 @@
     <%= form.collection_select :category_id, @categories, :id, :name, { prompt: "เลือกหมวดหมู่" }, { required: true } %>
   </div>
 
+  <fieldset class="market-selection">
+    <legend>ร้านที่มีหนังสือเล่มนี้ (เลือกได้หลายร้าน)</legend>
+    <%= form.collection_check_boxes :market_ids, @markets, :id, :name do |option| %>
+      <%= option.label class: "market-option" do %>
+        <%= option.check_box %>
+        <%= option.text %>
+      <% end %>
+    <% end %>
+    <% if @markets.empty? %>
+      <p>ยังไม่มีร้าน <%= link_to "เพิ่มร้าน", new_market_path %></p>
+    <% end %>
+  </fieldset>
+
   <%= form.submit "บันทึก", data: { turbo_submits_with: "กำลังบันทึก…" } %>
 <% end %>

@@ -5,6 +5,13 @@
   <p>หมวดหมู่: <%= @book.category.name %></p>
   <p><%= @book.description %></p>
   <p>ราคา: <%= number_to_currency(@book.price, unit: "฿") %></p>
+  <h2>ร้านที่มีหนังสือเล่มนี้</h2>
+  <% @book.markets.each do |market| %>
+    <p><%= market.name %></p>
+  <% end %>
+  <% if @book.markets.empty? %>
+    <p>ยังไม่ได้ระบุร้าน</p>
+  <% end %>
   <% if authenticated? && Current.user.admin? %>
     <%= render "actions", book: @book %>
   <% end %>

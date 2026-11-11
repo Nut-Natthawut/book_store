@@ -55,3 +55,5 @@ a:focus-visible, input:focus-visible, button:focus-visible, textarea:focus-visib
 .category { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 16px; border: 1px solid #78716c; border-radius: 6px; text-decoration: none; }
 .category:hover { background: #e7e5e4; }
 .category[aria-current="page"] { background: #1c1917; color: white; }
+.market-selection { margin-bottom: 20px; }
+.market-option { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; }

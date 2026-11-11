@@ -50,3 +50,21 @@ categories.each do |name, titles|
 end
 
 puts "เตรียมข้อมูลตัวอย่าง 8 หมวดและ 40 เล่มแล้ว โดยไม่สร้างรายการเดิมซ้ำ"
+
+# ร้านสมมติ: หนังสือแต่ละเล่มอยู่ในร้านกลางเมืองและร้านเฉพาะทางอีกหนึ่งแห่ง
+markets = {
+  "ร้านหนังสือกลางเมือง" => categories.keys,
+  "ร้านหนังสือเรียนรู้" => ["Programming", "Science", "Business", "Self Development"],
+  "ร้านหนังสือวันพักผ่อน" => ["Novel", "History", "Cooking", "Travel"]
+}
+
+markets.each do |name, category_names|
+  market = Market.find_or_create_by!(name: name)
+  titles = categories.values_at(*category_names).flatten
+
+  Book.where(title: titles, author: "Book Store").find_each do |book|
+    BookMarket.find_or_create_by!(book: book, market: market)
+  end
+end
+
+puts "เตรียมร้านตัวอย่าง 3 ร้าน และผูกหนังสือผ่าน book_markets แล้ว"

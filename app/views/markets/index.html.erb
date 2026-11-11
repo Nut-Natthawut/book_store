@@ -1,0 +1,24 @@
+<main class="page">
+  <h1>จัดการร้าน</h1>
+  <%= tag.p flash[:notice], class: "notice", role: "status" if flash[:notice] %>
+
+  <div class="actions">
+    <%= link_to "เพิ่มร้าน", new_market_path %>
+    <%= link_to "กลับหน้า Admin", admin_path %>
+  </div>
+
+  <% @markets.each do |market| %>
+    <article class="book">
+      <h2><%= market.name %></h2>
+      <div class="actions">
+        <%= link_to "แก้ไข", edit_market_path(market) %>
+        <%= button_to "ลบ", market_path(market), method: :delete,
+              form: { data: { turbo_confirm: "ยืนยันการลบร้านนี้? หนังสือจะยังอยู่ แต่ความสัมพันธ์กับร้านนี้จะถูกลบ" } } %>
+      </div>
+    </article>
+  <% end %>
+
+  <% if @markets.empty? %>
+    <p>ยังไม่มีร้าน</p>
+  <% end %>
+</main>

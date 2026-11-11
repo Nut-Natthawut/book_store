@@ -1,0 +1,19 @@
+<%= form_with model: market do |form| %>
+  <% if market.errors.any? %>
+    <div class="alert" role="alert">
+      <p>บันทึกไม่ได้ กรุณาตรวจสอบข้อมูล:</p>
+      <ul>
+        <% market.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name, "ชื่อร้าน" %>
+    <%= form.text_field :name, required: true %>
+  </div>
+
+  <%= form.submit "บันทึก", data: { turbo_submits_with: "กำลังบันทึก…" } %>
+<% end %>

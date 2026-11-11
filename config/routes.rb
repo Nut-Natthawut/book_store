@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   resource :session
   resources :books
   resources :categories, except: [ :show ]
+  resources :markets, except: [ :show ]
   resources :users, only: [ :new, :create ]
   get "admin", to: "admin#index", as: :admin
 
