@@ -1,24 +1,33 @@
-# README
+# Book Store
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Rails, PostgreSQL, ERB, Tailwind และ esbuild
 
-Things you may want to cover:
+## เปิดโปรเจกต์ในเครื่อง
 
-* Ruby version
+ใช้ Ruby 4.0.9, Rails 8.1.4.1, Node 26.13.0 และ Yarn 1.22.22 พร้อม PostgreSQL ที่เปิดใช้งานอยู่
 
-* System dependencies
+```zsh
+bundle install
+yarn install
+bin/rails db:prepare
+bin/rails db:seed
+bin/dev
+```
 
-* Configuration
+## บัญชีตัวอย่าง
 
-* Database creation
+เปิด http://localhost:3000/session/new แล้ว Login ด้วยบัญชีที่ seed สร้าง:
 
-* Database initialization
+| อีเมล | รหัสผ่านเริ่มต้น | Role |
+|---|---|---|
+| admin@example.com | 1234 | admin |
+| user@example.com | 1234 | customer (ผู้ใช้ทั่วไป) |
 
-* How to run the test suite
+ใช้สำหรับ local development เท่านั้น รัน seed ซ้ำไม่เปลี่ยนรหัสผ่านหรือ role ของบัญชีเดิม หากเปลี่ยนรหัสผ่านแล้วให้ใช้รหัสปัจจุบัน หาก role ของบัญชีเดิมไม่ตรงกับ seed คำสั่งจะหยุดให้ตรวจสอบ
 
-* Services (job queues, cache servers, search engines, etc.)
+## ข้อมูลตัวอย่างจาก seed
 
-* Deployment instructions
-
-* ...
+- 8 หมวด: Programming, Novel, Science, History, Business, Self Development, Cooking, Travel
+- หนังสือสมมติ 40 เล่ม หมวดละ 5 เล่ม มีชื่อ ผู้เขียน รายละเอียด และราคา
+- ค้นรายการเดิมจากชื่อและผู้เขียนก่อนสร้าง จึงรันซ้ำไม่เพิ่มรายการเดิม ไม่แก้ไขหรือลบข้อมูลที่มีอยู่
+- ถ้าฐานข้อมูลมีข้อมูลอยู่แล้ว จำนวนรวมอาจมากกว่า 8 หมวดหรือ 40 เล่ม
