@@ -12,7 +12,7 @@
       <h2><%= market.name %></h2>
       <div class="actions">
         <%= link_to "แก้ไข", edit_market_path(market) %>
-        <%= button_to "ลบ", market_path(market), method: :delete,
+        <%= button_to "ลบ", market_path(market), method: :delete, class: "button-danger",
               form: { data: { turbo_confirm: "ยืนยันการลบร้านนี้? หนังสือจะยังอยู่ แต่ความสัมพันธ์กับร้านนี้จะถูกลบ" } } %>
       </div>
     </article>

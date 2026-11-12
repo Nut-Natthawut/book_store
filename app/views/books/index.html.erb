@@ -2,7 +2,7 @@
   <h1>หนังสือทั้งหมด</h1>
   <%= tag.p flash[:notice], class: "notice", role: "status" if flash[:notice] %>
 
-  <nav aria-label="บัญชีผู้ใช้">
+  <nav class="account-navigation" aria-label="บัญชีผู้ใช้">
     <% if authenticated? %>
       <p><%= Current.user.email_address %></p>
       <% if Current.user.admin? %>
@@ -15,7 +15,7 @@
     <% end %>
   </nav>
 
-  <%= form_with url: books_path, method: :get do |form| %>
+  <%= form_with url: books_path, method: :get, class: "search-form" do |form| %>
     <%= form.hidden_field :category_id, value: @category_id if @category_id %>
     <div class="field">
       <%= form.label :q, "ค้นหาชื่อหนังสือ" %>
