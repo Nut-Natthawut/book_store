@@ -1,0 +1,45 @@
+---
+info:
+  name: 01 Create Customer - 201
+  type: http
+  seq: 1
+http:
+  method: POST
+  url: "{{base_url}}/api/v1/users"
+  headers:
+  - name: Accept
+    value: application/json
+  - name: Content-Type
+    value: application/json
+  - name: X-CSRF-Token
+    value: "{{csrf_token}}"
+  body:
+    type: json
+    data: |-
+      {
+        "user": {
+          "email_address": "narin.reader@example.com",
+          "password": "1234",
+          "password_confirmation": "1234",
+          "role": "customer"
+        }
+      }
+  auth: inherit
+runtime:
+  scripts:
+  - type: after-response
+    code: |-
+      if (res.status === 201) {
+        bru.setVar("customer_id", res.body.id);
+      }
+  - type: tests
+    code: |-
+      test("HTTP 201", function () {
+        expect(res.status).to.equal(201);
+      });
+      test("No password fields", function () { expect(res.body).to.have.all.keys("id", "email_address", "role"); });
+      test("Correct role", function () { expect(res.body.role).to.equal("customer"); });
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: false

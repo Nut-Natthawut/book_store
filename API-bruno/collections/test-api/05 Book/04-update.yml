@@ -1,0 +1,40 @@
+---
+info:
+  name: 04 Update - 200
+  type: http
+  seq: 4
+http:
+  method: PATCH
+  url: "{{base_url}}/api/v1/books/{{book_id}}"
+  headers:
+  - name: Accept
+    value: application/json
+  - name: Content-Type
+    value: application/json
+  - name: X-CSRF-Token
+    value: "{{csrf_token}}"
+  body:
+    type: json
+    data: |-
+      {
+        "book": {
+          "title": "The Clean Coder",
+          "price": 399
+        }
+      }
+  auth: inherit
+runtime:
+  scripts:
+  - type: before-request
+    code: if (!bru.getVar("book_id")) throw new Error("Run the create request for
+      book_id first");
+  - type: tests
+    code: |-
+      test("HTTP 200", function () {
+        expect(res.status).to.equal(200);
+      });
+      test("Market links retained", function () { expect(res.body.markets).to.have.lengthOf(1); });
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: false

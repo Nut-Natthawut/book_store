@@ -1,0 +1,49 @@
+---
+info:
+  name: 07 Create Error - 422
+  type: http
+  seq: 7
+http:
+  method: POST
+  url: "{{base_url}}/api/v1/books"
+  headers:
+  - name: Accept
+    value: application/json
+  - name: Content-Type
+    value: application/json
+  - name: X-CSRF-Token
+    value: "{{csrf_token}}"
+  body:
+    type: json
+    data: |-
+      {
+        "book": {
+          "title": "",
+          "author": "",
+          "description": "",
+          "price": -1,
+          "category_id": {{category_id}},
+          "market_ids": [
+            {{market_id}}
+          ]
+        }
+      }
+  auth: inherit
+runtime:
+  scripts:
+  - type: before-request
+    code: |-
+      if (!bru.getVar("category_id")) throw new Error("Run the create request for category_id first");
+      if (!bru.getVar("market_id")) throw new Error("Run the create request for market_id first");
+  - type: tests
+    code: |-
+      test("HTTP 422", function () {
+        expect(res.status).to.equal(422);
+      });
+      test("JSON errors", function () {
+        expect(res.body.errors).to.be.an("array").that.is.not.empty;
+      });
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: false

@@ -1,0 +1,33 @@
+---
+info:
+  name: 05 Search - 200
+  type: http
+  seq: 5
+http:
+  method: GET
+  url: "{{base_url}}/api/v1/books?q=The%20Clean%20Coder"
+  headers:
+  - name: Accept
+    value: application/json
+  auth: inherit
+  params:
+  - name: q
+    value: The Clean Coder
+    type: query
+runtime:
+  scripts:
+  - type: tests
+    code: |-
+      test("HTTP 200", function () {
+        expect(res.status).to.equal(200);
+      });
+      test("Search returns matching books only", function () {
+        expect(res.body).to.be.an("array").that.is.not.empty;
+        res.body.forEach(function (book) {
+          expect(book.title.toLowerCase()).to.include("the clean coder");
+        });
+      });
+settings:
+  encodeUrl: false
+  timeout: 0
+  followRedirects: false

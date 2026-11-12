@@ -1,0 +1,40 @@
+---
+info:
+  name: 02 Login Admin - 200
+  type: http
+  seq: 2
+http:
+  method: POST
+  url: "{{base_url}}/api/v1/session"
+  headers:
+  - name: Accept
+    value: application/json
+  - name: Content-Type
+    value: application/json
+  - name: X-CSRF-Token
+    value: "{{csrf_token}}"
+  body:
+    type: json
+    data: |-
+      {
+        "email_address": "admin@example.com",
+        "password": "1234"
+      }
+  auth: inherit
+runtime:
+  scripts:
+  - type: after-response
+    code: |-
+      if (res.status === 200) {
+        bru.setVar("csrf_token", res.body.csrf_token);
+      }
+  - type: tests
+    code: |-
+      test("HTTP 200", function () {
+        expect(res.status).to.equal(200);
+      });
+      test("Correct role", function () { expect(res.body.user.role).to.equal("admin"); });
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: false

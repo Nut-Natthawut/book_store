@@ -1,0 +1,25 @@
+---
+info:
+  name: 03 Logout Admin - 204
+  type: http
+  seq: 3
+http:
+  method: DELETE
+  url: "{{base_url}}/api/v1/session"
+  headers:
+  - name: Accept
+    value: application/json
+  - name: X-CSRF-Token
+    value: "{{csrf_token}}"
+  auth: inherit
+runtime:
+  scripts:
+  - type: tests
+    code: |-
+      test("HTTP 204", function () {
+        expect(res.status).to.equal(204);
+      });
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: false

@@ -1,0 +1,52 @@
+---
+info:
+  name: 01 Create with Market - 201
+  type: http
+  seq: 1
+http:
+  method: POST
+  url: "{{base_url}}/api/v1/books"
+  headers:
+  - name: Accept
+    value: application/json
+  - name: Content-Type
+    value: application/json
+  - name: X-CSRF-Token
+    value: "{{csrf_token}}"
+  body:
+    type: json
+    data: |-
+      {
+        "book": {
+          "title": "Clean Code",
+          "author": "Robert C. Martin",
+          "description": "แนวทางเขียนโค้ดให้อ่านง่ายและดูแลรักษาได้",
+          "price": 299,
+          "category_id": {{category_id}},
+          "market_ids": [
+            {{market_id}}
+          ]
+        }
+      }
+  auth: inherit
+runtime:
+  scripts:
+  - type: before-request
+    code: |-
+      if (!bru.getVar("category_id")) throw new Error("Run the create request for category_id first");
+      if (!bru.getVar("market_id")) throw new Error("Run the create request for market_id first");
+  - type: after-response
+    code: |-
+      if (res.status === 201) {
+        bru.setVar("book_id", res.body.id);
+      }
+  - type: tests
+    code: |-
+      test("HTTP 201", function () {
+        expect(res.status).to.equal(201);
+      });
+      test("Selected market", function () { expect(res.body.markets).to.have.lengthOf(1); });
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: false

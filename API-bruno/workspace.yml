@@ -1,0 +1,12 @@
+opencollection: 1.0.0
+info:
+  name: "API-bruno"
+  type: workspace
+
+collections:
+  - name: "test-api"
+    path: "collections/test-api"
+
+specs:
+
+docs: ''

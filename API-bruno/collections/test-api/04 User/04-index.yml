@@ -1,0 +1,24 @@
+---
+info:
+  name: 04 Index - 200
+  type: http
+  seq: 4
+http:
+  method: GET
+  url: "{{base_url}}/api/v1/users"
+  headers:
+  - name: Accept
+    value: application/json
+  auth: inherit
+runtime:
+  scripts:
+  - type: tests
+    code: |-
+      test("HTTP 200", function () {
+        expect(res.status).to.equal(200);
+      });
+      test("Safe user list", function () { res.body.forEach(function (user) { expect(user).to.have.all.keys("id", "email_address", "role"); }); });
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: false

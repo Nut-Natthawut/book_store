@@ -1,0 +1,28 @@
+---
+info:
+  name: 05 Delete Admin - 204
+  type: http
+  seq: 5
+http:
+  method: DELETE
+  url: "{{base_url}}/api/v1/users/{{admin_id}}"
+  headers:
+  - name: Accept
+    value: application/json
+  - name: X-CSRF-Token
+    value: "{{csrf_token}}"
+  auth: inherit
+runtime:
+  scripts:
+  - type: before-request
+    code: if (!bru.getVar("admin_id")) throw new Error("Run the create request for
+      admin_id first");
+  - type: tests
+    code: |-
+      test("HTTP 204", function () {
+        expect(res.status).to.equal(204);
+      });
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: false

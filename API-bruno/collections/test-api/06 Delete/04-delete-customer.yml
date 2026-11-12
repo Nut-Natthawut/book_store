@@ -1,0 +1,28 @@
+---
+info:
+  name: 04 Delete Customer - 204
+  type: http
+  seq: 4
+http:
+  method: DELETE
+  url: "{{base_url}}/api/v1/users/{{customer_id}}"
+  headers:
+  - name: Accept
+    value: application/json
+  - name: X-CSRF-Token
+    value: "{{csrf_token}}"
+  auth: inherit
+runtime:
+  scripts:
+  - type: before-request
+    code: if (!bru.getVar("customer_id")) throw new Error("Run the create request
+      for customer_id first");
+  - type: tests
+    code: |-
+      test("HTTP 204", function () {
+        expect(res.status).to.equal(204);
+      });
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: false

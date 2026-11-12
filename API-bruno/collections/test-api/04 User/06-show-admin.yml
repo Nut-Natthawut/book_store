@@ -1,0 +1,27 @@
+---
+info:
+  name: 06 Show Admin - 200
+  type: http
+  seq: 6
+http:
+  method: GET
+  url: "{{base_url}}/api/v1/users/{{admin_id}}"
+  headers:
+  - name: Accept
+    value: application/json
+  auth: inherit
+runtime:
+  scripts:
+  - type: before-request
+    code: if (!bru.getVar("admin_id")) throw new Error("Run the create request for
+      admin_id first");
+  - type: tests
+    code: |-
+      test("HTTP 200", function () {
+        expect(res.status).to.equal(200);
+      });
+      test("No password fields", function () { expect(res.body).to.have.all.keys("id", "email_address", "role"); });
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: false

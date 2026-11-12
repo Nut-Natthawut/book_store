@@ -1,0 +1,40 @@
+---
+info:
+  name: 01 Create - 201
+  type: http
+  seq: 1
+http:
+  method: POST
+  url: "{{base_url}}/api/v1/categories"
+  headers:
+  - name: Accept
+    value: application/json
+  - name: Content-Type
+    value: application/json
+  - name: X-CSRF-Token
+    value: "{{csrf_token}}"
+  body:
+    type: json
+    data: |-
+      {
+        "category": {
+          "name": "การเขียนโปรแกรม"
+        }
+      }
+  auth: inherit
+runtime:
+  scripts:
+  - type: after-response
+    code: |-
+      if (res.status === 201) {
+        bru.setVar("category_id", res.body.id);
+      }
+  - type: tests
+    code: |-
+      test("HTTP 201", function () {
+        expect(res.status).to.equal(201);
+      });
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: false

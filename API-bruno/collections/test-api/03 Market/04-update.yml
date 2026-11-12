@@ -1,0 +1,38 @@
+---
+info:
+  name: 04 Update - 200
+  type: http
+  seq: 4
+http:
+  method: PATCH
+  url: "{{base_url}}/api/v1/markets/{{market_id}}"
+  headers:
+  - name: Accept
+    value: application/json
+  - name: Content-Type
+    value: application/json
+  - name: X-CSRF-Token
+    value: "{{csrf_token}}"
+  body:
+    type: json
+    data: |-
+      {
+        "market": {
+          "name": "ร้านหนังสือบ้านนักอ่าน สาขาสยาม"
+        }
+      }
+  auth: inherit
+runtime:
+  scripts:
+  - type: before-request
+    code: if (!bru.getVar("market_id")) throw new Error("Run the create request for
+      market_id first");
+  - type: tests
+    code: |-
+      test("HTTP 200", function () {
+        expect(res.status).to.equal(200);
+      });
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: false
