@@ -33,3 +33,11 @@ bin/dev
 - หนังสือตัวอย่างแต่ละเล่มเชื่อมกับ 2 ร้านผ่าน `book_markets` รวม 80 คู่เชื่อม รันซ้ำไม่เพิ่มคู่เดิมซ้ำ
 - ค้นรายการเดิมจากชื่อและผู้เขียนก่อนสร้าง จึงรันซ้ำไม่เพิ่มรายการเดิม ไม่แก้ไขหรือลบข้อมูลที่มีอยู่
 - ถ้าฐานข้อมูลมีข้อมูลอยู่แล้ว จำนวนรวมอาจมากกว่า 8 หมวดหรือ 40 เล่ม
+
+## JSON API
+
+รองรับ Book, Category, Market และ User ที่ `/api/v1` โดยใช้ session cookie และ CSRF token ของ Rails
+
+ดู endpoints, สิทธิ์, ตัวอย่าง JSON และวิธี Login ผ่าน Bruno ใน [คู่มือ API](docs/API.md)
+
+API ทุก endpoint ของข้อมูลต้อง Login ก่อน; customer อ่าน Book/Category/Market ได้; admin ทำ CRUD ได้ทุก Model; User ให้เฉพาะ admin เข้าถึง ไม่มีข้อมูล password digest ใน response
