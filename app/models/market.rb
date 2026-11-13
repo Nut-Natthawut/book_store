@@ -2,5 +2,5 @@ class Market < ApplicationRecord
   has_many :book_markets, dependent: :destroy
   has_many :books, through: :book_markets
 
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: { case_sensitive: false }
 end

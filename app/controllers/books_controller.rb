@@ -61,11 +61,11 @@ class BooksController < ApplicationController
     @categories = Category.order(:name)
   end
 
-  def book_params
-    params.require(:book).permit(:title, :author, :description, :price, :category_id, market_ids: [])
-  end
-
   def load_markets
     @markets = Market.order(:name)
+  end
+
+  def book_params
+    params.expect(book: [ :title, :author, :description, :price, :category_id, market_ids: [] ])
   end
 end

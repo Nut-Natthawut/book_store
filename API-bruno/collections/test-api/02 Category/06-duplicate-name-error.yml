@@ -1,0 +1,41 @@
+---
+info:
+  name: 06 Duplicate Name Error - 422
+  type: http
+  seq: 6
+http:
+  method: POST
+  url: "{{base_url}}/api/v1/categories"
+  headers:
+  - name: Accept
+    value: application/json
+  - name: Content-Type
+    value: application/json
+  - name: X-CSRF-Token
+    value: "{{csrf_token}}"
+  body:
+    type: json
+    data: |-
+      {
+        "category": {
+          "name": "พัฒนาซอฟต์แวร์"
+        }
+      }
+  auth: inherit
+runtime:
+  scripts:
+  - type: tests
+    code: |-
+      test("HTTP 422", function () {
+        expect(res.status).to.equal(422);
+      });
+      test("JSON errors", function () {
+        expect(res.body.errors).to.be.an("array").that.is.not.empty;
+      });
+      test("Error message", function () {
+        expect(res.body.errors.join(" ")).to.include("taken");
+      });
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: false

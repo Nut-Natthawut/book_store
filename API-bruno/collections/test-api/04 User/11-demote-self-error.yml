@@ -1,0 +1,44 @@
+---
+info:
+  name: 11 Demote Self Error - 422
+  type: http
+  seq: 11
+http:
+  method: PATCH
+  url: "{{base_url}}/api/v1/users/{{current_admin_id}}"
+  headers:
+  - name: Accept
+    value: application/json
+  - name: Content-Type
+    value: application/json
+  - name: X-CSRF-Token
+    value: "{{csrf_token}}"
+  body:
+    type: json
+    data: |-
+      {
+        "user": {
+          "role": "customer"
+        }
+      }
+  auth: inherit
+runtime:
+  scripts:
+  - type: before-request
+    code: |-
+      if (!bru.getVar("current_admin_id")) throw new Error("Run the create request for current_admin_id first");
+  - type: tests
+    code: |-
+      test("HTTP 422", function () {
+        expect(res.status).to.equal(422);
+      });
+      test("JSON errors", function () {
+        expect(res.body.errors).to.be.an("array").that.is.not.empty;
+      });
+      test("Error message", function () {
+        expect(res.body.errors.join(" ")).to.include("ลดสิทธิ์");
+      });
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: false

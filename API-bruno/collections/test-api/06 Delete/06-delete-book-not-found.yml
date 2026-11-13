@@ -1,0 +1,31 @@
+---
+info:
+  name: 06 Delete Book Not Found - 404
+  type: http
+  seq: 6
+http:
+  method: DELETE
+  url: "{{base_url}}/api/v1/books/{{book_id}}"
+  headers:
+  - name: Accept
+    value: application/json
+  - name: X-CSRF-Token
+    value: "{{csrf_token}}"
+  auth: inherit
+runtime:
+  scripts:
+  - type: before-request
+    code: |-
+      if (!bru.getVar("book_id")) throw new Error("Run the create request for book_id first");
+  - type: tests
+    code: |-
+      test("HTTP 404", function () {
+        expect(res.status).to.equal(404);
+      });
+      test("JSON errors", function () {
+        expect(res.body.errors).to.be.an("array").that.is.not.empty;
+      });
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: false

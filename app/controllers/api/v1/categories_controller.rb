@@ -3,18 +3,18 @@ class Api::V1::CategoriesController < Api::V1::BaseController
   before_action :find_category, only: [ :show, :update, :destroy ]
 
   def index
-    render json: Category.order(id: :asc).as_json(only: [ :id, :name ])
+    render json: Category.order(id: :asc).map { |category| category_json(category) }
   end
 
   def show
-    render json: @category.as_json(only: [ :id, :name ])
+    render json: category_json(@category)
   end
 
   def create
     @category = Category.new(category_params)
 
     if @category.save
-      render json: @category.as_json(only: [ :id, :name ]), status: :created
+      render json: category_json(@category), status: :created
     else
       render json: { errors: @category.errors.full_messages }, status: :unprocessable_entity
     end
@@ -22,7 +22,7 @@ class Api::V1::CategoriesController < Api::V1::BaseController
 
   def update
     if @category.update(category_params)
-      render json: @category.as_json(only: [ :id, :name ])
+      render json: category_json(@category)
     else
       render json: { errors: @category.errors.full_messages }, status: :unprocessable_entity
     end
@@ -40,6 +40,10 @@ class Api::V1::CategoriesController < Api::V1::BaseController
 
   def find_category
     @category = Category.find(params[:id])
+  end
+
+  def category_json(category)
+    category.as_json(only: [ :id, :name ])
   end
 
   def category_params

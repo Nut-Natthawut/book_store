@@ -44,10 +44,6 @@ class Api::V1::BooksController < Api::V1::BaseController
     @book = Book.find(params[:id])
   end
 
-  def book_params
-    params.expect(book: [ :title, :author, :description, :price, :category_id, market_ids: [] ])
-  end
-
   def book_json(book)
     data = book.as_json(
       only: [ :id, :title, :author, :description, :price, :category_id ],
@@ -58,5 +54,9 @@ class Api::V1::BooksController < Api::V1::BaseController
     )
     data["markets"].sort_by! { |market| market["id"] }
     data
+  end
+
+  def book_params
+    params.expect(book: [ :title, :author, :description, :price, :category_id, market_ids: [] ])
   end
 end

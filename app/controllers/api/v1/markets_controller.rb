@@ -3,18 +3,18 @@ class Api::V1::MarketsController < Api::V1::BaseController
   before_action :find_market, only: [ :show, :update, :destroy ]
 
   def index
-    render json: Market.order(id: :asc).as_json(only: [ :id, :name ])
+    render json: Market.order(id: :asc).map { |market| market_json(market) }
   end
 
   def show
-    render json: @market.as_json(only: [ :id, :name ])
+    render json: market_json(@market)
   end
 
   def create
     @market = Market.new(market_params)
 
     if @market.save
-      render json: @market.as_json(only: [ :id, :name ]), status: :created
+      render json: market_json(@market), status: :created
     else
       render json: { errors: @market.errors.full_messages }, status: :unprocessable_entity
     end
@@ -22,7 +22,7 @@ class Api::V1::MarketsController < Api::V1::BaseController
 
   def update
     if @market.update(market_params)
-      render json: @market.as_json(only: [ :id, :name ])
+      render json: market_json(@market)
     else
       render json: { errors: @market.errors.full_messages }, status: :unprocessable_entity
     end
@@ -40,6 +40,10 @@ class Api::V1::MarketsController < Api::V1::BaseController
 
   def find_market
     @market = Market.find(params[:id])
+  end
+
+  def market_json(market)
+    market.as_json(only: [ :id, :name ])
   end
 
   def market_params

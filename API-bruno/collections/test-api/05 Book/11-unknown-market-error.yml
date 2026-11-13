@@ -1,0 +1,51 @@
+---
+info:
+  name: 11 Unknown Market Error - 422
+  type: http
+  seq: 11
+http:
+  method: POST
+  url: "{{base_url}}/api/v1/books"
+  headers:
+  - name: Accept
+    value: application/json
+  - name: Content-Type
+    value: application/json
+  - name: X-CSRF-Token
+    value: "{{csrf_token}}"
+  body:
+    type: json
+    data: |-
+      {
+        "book": {
+          "title": "Refactoring",
+          "author": "Martin Fowler",
+          "description": "ปรับปรุงโค้ดเดิมให้ดีขึ้น",
+          "price": 350,
+          "category_id": {{category_id}},
+          "market_ids": [
+            999999999
+          ]
+        }
+      }
+  auth: inherit
+runtime:
+  scripts:
+  - type: before-request
+    code: |-
+      if (!bru.getVar("category_id")) throw new Error("Run the create request for category_id first");
+  - type: tests
+    code: |-
+      test("HTTP 422", function () {
+        expect(res.status).to.equal(422);
+      });
+      test("JSON errors", function () {
+        expect(res.body.errors).to.be.an("array").that.is.not.empty;
+      });
+      test("Error message", function () {
+        expect(res.body.errors.join(" ")).to.include("ไม่มีอยู่จริง");
+      });
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: false
