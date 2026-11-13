@@ -1,6 +1,8 @@
 class Api::V1::UsersController < Api::V1::BaseController
   before_action :require_admin
   before_action :find_user, only: [ :show, :update, :destroy ]
+  before_action :prevent_self_demotion, only: :update
+  before_action :prevent_self_deletion, only: :destroy
 
   def index
     render json: User.order(id: :asc).as_json(only: [ :id, :email_address, :role ])
@@ -37,6 +39,20 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def find_user
     @user = User.find(params[:id])
+  end
+
+  def prevent_self_demotion
+    role = user_params[:role]
+
+    if @user == Current.user && role.present? && role != "admin"
+      render json: { errors: [ "ไม่สามารถลดสิทธิ์บัญชีของตัวเองได้" ] }, status: :unprocessable_entity
+    end
+  end
+
+  def prevent_self_deletion
+    if @user == Current.user
+      render json: { errors: [ "ไม่สามารถลบบัญชีของตัวเองได้" ] }, status: :unprocessable_entity
+    end
   end
 
   def user_params
