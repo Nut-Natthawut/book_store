@@ -1,0 +1,32 @@
+---
+info:
+  name: 14 Delete Category In Use Error - 422
+  type: http
+  seq: 14
+http:
+  method: DELETE
+  url: "{{base_url}}/api/v1/categories/{{category_id}}"
+  headers:
+  - name: Accept
+    value: application/json
+  - name: X-CSRF-Token
+    value: "{{csrf_token}}"
+  auth: inherit
+runtime:
+  scripts:
+  - type: before-request
+    code: |-
+      if (!bru.getVar("category_id")) throw new Error("Run the create request for category_id first");
+      if (!bru.getVar("book_id")) throw new Error("Run the create request for book_id first");
+  - type: tests
+    code: |-
+      test("HTTP 422", function () {
+        expect(res.status).to.equal(422);
+      });
+      test("JSON errors", function () {
+        expect(res.body.errors).to.be.an("array").that.is.not.empty;
+      });
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: false

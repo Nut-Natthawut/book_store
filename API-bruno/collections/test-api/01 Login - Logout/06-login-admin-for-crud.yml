@@ -27,6 +27,7 @@ runtime:
     code: |-
       if (res.status === 200) {
         bru.setVar("csrf_token", res.body.csrf_token);
+        bru.setVar("current_admin_id", res.body.user.id);
       }
   - type: tests
     code: |-
