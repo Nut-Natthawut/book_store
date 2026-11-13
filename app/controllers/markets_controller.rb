@@ -43,6 +43,6 @@ class MarketsController < ApplicationController
   end
 
   def market_params
-    params.require(:market).permit(:name)
+    params.expect(market: [ :name ])
   end
 end
