@@ -56,7 +56,11 @@ Category: `{ "category": { "name": "Programming" } }`
 
 Market: `{ "market": { "name": "ร้านใหม่" } }`
 
-Category/Market response มีเฉพาะ id และ name
+Category/Market response มีเฉพาะ id และ name ชื่อห้ามซ้ำกัน โดยไม่สนตัวพิมพ์เล็กใหญ่ ("Novel" กับ "novel" ถือว่าซ้ำ) ซ้ำจะได้ 422
+
+ราคา Book ต้องมากกว่า 0 และน้อยกว่า 100,000,000
+
+ถ้า update Book ไม่ผ่าน validation ความสัมพันธ์กับ Market จะไม่เปลี่ยน
 
 User (admin-only):
 
@@ -80,8 +84,8 @@ JSON รูปแบบ `{ "errors": ["ข้อความ"] }`
 - 400: ขาด object parameters เช่น book/category/market/user หรือส่งชนิดข้อมูลผิด เช่น `{"book":"invalid"}` หรือ `{"user":[]}`
 - 401: ยังไม่ Login หรือ Login ไม่ถูกต้อง
 - 403: Login แล้วแต่ไม่มีสิทธิ์
-- 404: ID ของ resource ไม่มีอยู่ หรือ market_ids อ้างอิงร้านที่ไม่มีอยู่
-- 422: validation ไม่ผ่าน (รวมถึง category_id อ้างอิงหมวดที่ไม่มีอยู่) หรือ CSRF token ไม่ถูกต้อง
+- 404: ID ของ resource ไม่มีอยู่
+- 422: validation ไม่ผ่าน (รวมถึง category_id หรือ market_ids อ้างอิงข้อมูลที่ไม่มีอยู่) หรือ CSRF token ไม่ถูกต้อง
 - 429: ลอง Login เกินกำหนด
 
-ลบ Category ที่มี Book ไม่ได้ (422); ลบ Market ลบเฉพาะแถวเชื่อมและเก็บ Book ไว้; ลบ User จะลบ sessions ของบัญชีนั้นด้วย
+ลบ Category ที่มี Book ไม่ได้ (422); ลบ Market ลบเฉพาะแถวเชื่อมและเก็บ Book ไว้; ลบ User จะลบ sessions ของบัญชีนั้นด้วย; admin ลบบัญชีตัวเองหรือเปลี่ยน role ตัวเองเป็น customer ไม่ได้ (422) เพื่อให้ระบบมี admin เหลืออยู่เสมอ
