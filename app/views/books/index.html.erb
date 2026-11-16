@@ -7,7 +7,7 @@
     <% if user_signed_in? %>
       <p><%= current_user.email %></p>
       <% if current_user.admin? %>
-        <%= link_to "หน้าจัดการ Admin", admin_path %>
+        <%= link_to "หน้าจัดการ Admin", admin_root_path %>
       <% end %>
       <% if policy(Book).create? %>
         <%= link_to "เพิ่มหนังสือ", new_book_path %>

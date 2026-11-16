@@ -1,12 +1,9 @@
 Rails.application.routes.draw do
   devise_for :users
+  ActiveAdmin.routes(self)
   root "books#index"
 
   resources :books
-  resources :categories, except: [ :show ]
-  resources :markets, except: [ :show ]
-  resources :users, only: [ :new, :create ]
-  resource :admin, only: [ :show ], controller: "admin"
 
   namespace :api, defaults: { format: :json } do
     namespace :v1 do

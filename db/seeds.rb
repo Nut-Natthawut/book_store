@@ -2,6 +2,11 @@
 abort "db:seed ใช้ได้เฉพาะ development" unless Rails.env.development?
 
 # อีเมลและรหัสผ่านอ่านจาก ENV (ไฟล์ .env) ห้าม hardcode ไว้ในโค้ด ดูตัวอย่างใน .env.example
+missing = %w[ADMIN_EMAIL ADMIN_PASSWORD CUSTOMER_EMAIL CUSTOMER_PASSWORD].select { |key| ENV[key].blank? }
+if missing.any?
+  abort "ยังไม่ได้ตั้งค่า #{missing.join(", ")} ให้คัดลอก .env.example เป็น .env แล้วใส่รหัสผ่าน (อย่างน้อย 8 ตัวอักษร)"
+end
+
 users = [
   { email: ENV.fetch("ADMIN_EMAIL"), password: ENV.fetch("ADMIN_PASSWORD"), role: "admin" },
   { email: ENV.fetch("CUSTOMER_EMAIL"), password: ENV.fetch("CUSTOMER_PASSWORD"), role: "customer" }

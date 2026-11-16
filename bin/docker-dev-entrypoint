@@ -11,6 +11,10 @@ bun install --frozen-lockfile --silent
 rm -f tmp/pids/server.pid
 
 if [ "$1" = "bin/dev" ]; then
+  if [ ! -f .env ]; then
+    echo "ไม่พบไฟล์ .env — รัน: cp .env.example .env แล้วใส่รหัสผ่านของบัญชี seed ก่อน docker compose up" >&2
+    exit 1
+  fi
   bin/rails db:prepare
 fi
 

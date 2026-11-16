@@ -31,6 +31,11 @@ gem "rolify", "~> 6.0"
 # Authorization policies [https://github.com/varvet/pundit]
 gem "pundit", "~> 2.5"
 
+# Admin UI [https://github.com/activeadmin/activeadmin] (v4 is still beta, pin the exact version)
+gem "activeadmin", "4.0.0.beta23"
+# ActiveAdmin v4 loads its own JS through importmap; the app itself still uses esbuild
+gem "importmap-rails"
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
