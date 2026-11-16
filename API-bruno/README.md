@@ -2,6 +2,12 @@
 
 เปิด Rails ที่ `http://localhost:3000` และเปิด Cookie Jar ของ Bruno ชุดนี้ใช้ session cookie + CSRF ไม่ใช้ Bearer
 
+**ก่อนรันครั้งแรก** คัดลอก `.env` ของโปรเจกต์ไปไว้ใน collection เพื่อให้ request Login อ่านอีเมล/รหัสผ่านจาก `process.env` (ไฟล์นี้ถูก ignore ไม่ถูก commit):
+
+```zsh
+cp .env API-bruno/collections/test-api/.env
+```
+
 กดตามลำดับโฟลเดอร์:
 
 | ลำดับ | ส่วน | กรณีหลัก |
@@ -19,10 +25,11 @@
 - script เก็บ CSRF token และ ID จาก response ให้อัตโนมัติ เริ่มที่ request `01 Prepare CSRF` แล้วไล่ตามลำดับ
 - `200` อ่าน/แก้ไข/Login สำเร็จ, `201` สร้างสำเร็จ, `204` ลบ/Logout สำเร็จ, `404` ไม่พบ ID, `422` validation error ที่ตั้งใจทดสอบ
 - ดูผล script ในแท็บ Tests ของแต่ละ request
-- บัญชี seed: `admin@example.com` / `1234` และ `user@example.com` / `1234` ถ้าเปลี่ยนรหัสแล้วให้แก้ Body ของ Login
+- บัญชี seed: อ่านจาก `ADMIN_EMAIL` / `ADMIN_PASSWORD` และ `CUSTOMER_EMAIL` / `CUSTOMER_PASSWORD` ใน `.env` ของ collection
 - ตัวอย่างหนังสือใช้ชื่อ Clean Code / The Clean Coder ของ Robert C. Martin หมวดการเขียนโปรแกรม และร้านหนังสือบ้านนักอ่าน ไม่เติมเลขท้ายชื่อสินค้า
-- Customer ตัวอย่าง: `narin.reader@example.com` / `1234`; แก้ไขเป็น `narin.customer@example.com`
-- Admin ตัวอย่าง: `mali.admin@example.com` / `1234`; แก้ไขเป็น `mali.manager@example.com`
+- Customer ตัวอย่าง: `narin.reader@example.com`; แก้ไขเป็น `narin.customer@example.com`
+- Admin ตัวอย่าง: `mali.admin@example.com`; แก้ไขเป็น `mali.manager@example.com`
+- รหัสผ่านของบัญชีตัวอย่างสุ่มใหม่ทุกรอบใน `01 Prepare CSRF` (ตัวแปร `test_user_password`)
 - ไม่มีตัวแปรในอีเมลหรือชื่อสินค้าแล้ว ส่วน `customer_id` และ `admin_id` เป็นเลขที่ API คืนตอนสร้าง script เก็บให้เพื่อเปิด/แก้/ลบให้ถูกบัญชี ไม่ใช่บัญชี admin ที่กำลัง Login
 - ถ้ารัน Create อีเมลเดิมซ้ำก่อนลบ จะได้ 422 ตาม validation ต้องจัดการข้อมูลรอบก่อนหรือเปลี่ยนอีเมลก่อนสร้างใหม่
 - การลบใช้เฉพาะ ID ที่สร้างในรอบนี้ ไม่ลบบัญชี Login จาก seed หรือหนังสือชื่อเดียวกันที่มีอยู่ก่อน

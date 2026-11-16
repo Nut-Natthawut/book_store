@@ -2,20 +2,20 @@
 
 Base URL: `http://localhost:3000/api/v1`
 
-API ใช้ Model และ session cookie เดิมของ Rails ไม่ใช้ Bearer token ต้อง Login ก่อนอ่านข้อมูลทุก Model; customer อ่าน Book/Category/Market ได้ แต่เขียนไม่ได้; User ทุก action และการเขียนข้อมูลทุก Model ให้เฉพาะ admin
+API ใช้ Model และ session cookie ของ Devise (ล็อกอินชุดเดียวกับหน้าเว็บ) ไม่ใช้ Bearer token สิทธิ์ตรวจด้วย Pundit policy ชุดเดียวกับหน้าเว็บ ต้อง Login ก่อนอ่านข้อมูลทุก Model; customer อ่าน Book/Category/Market ได้ แต่เขียนไม่ได้; User ทุก action และการเขียนข้อมูลทุก Model ให้เฉพาะ admin
 
 ## Authentication สำหรับ Bruno หรือ HTTP client
 
 เปิด cookie jar ให้เก็บและส่ง cookies ของ host เดิมทุก request
 
 1. `GET /api/v1/session/new` คืน `{ "csrf_token": "..." }` และ session cookie
-2. ส่ง `POST /api/v1/session` พร้อม header `X-CSRF-Token` จากข้อ 1 และ JSON `{ "email_address": "admin@example.com", "password": "1234" }`
-3. Login สำเร็จคืน `{ "user": { "id": 1, "email_address": "...", "role": "admin" }, "csrf_token": "..." }` ใช้ token นี้กับ request เขียนข้อมูลต่อไป โดยส่ง cookie jar เดิม
+2. ส่ง `POST /api/v1/session` พร้อม header `X-CSRF-Token` จากข้อ 1 และ JSON `{ "email": "<ADMIN_EMAIL>", "password": "<ADMIN_PASSWORD>" }`
+3. Login สำเร็จคืน `{ "user": { "id": 1, "email": "...", "role": "admin" }, "csrf_token": "..." }` ใช้ token นี้กับ request เขียนข้อมูลต่อไป โดยส่ง cookie jar เดิม
 4. Logout ด้วย `DELETE /api/v1/session` พร้อม `X-CSRF-Token` สำเร็จได้ 204 และ session ถูกยกเลิก
 
 Request JSON ใช้ `Content-Type: application/json` และ `Accept: application/json` ทุก POST/PATCH/PUT/DELETE ต้องมี CSRF token ที่ตรงกับ session cookie ไม่มีการปิด CSRF เพื่อให้เรียก API ง่ายขึ้น
 
-บัญชีจาก seed: admin@example.com / 1234 และ user@example.com / 1234 (customer) ถ้าเปลี่ยนรหัสแล้วต้องใช้รหัสปัจจุบัน
+บัญชีจาก seed: อีเมลและรหัสผ่านตามที่ตั้งไว้ใน `.env` (`ADMIN_*` และ `CUSTOMER_*`) ถ้าเปลี่ยนรหัสแล้วต้องใช้รหัสปัจจุบัน
 
 ## Endpoints
 
@@ -67,15 +67,15 @@ User (admin-only):
 ```json
 {
   "user": {
-    "email_address": "new@example.com",
-    "password": "1234",
-    "password_confirmation": "1234",
+    "email": "new@example.com",
+    "password": "<อย่างน้อย 8 ตัวอักษร>",
+    "password_confirmation": "<รหัสเดียวกัน>",
     "role": "customer"
   }
 }
 ```
 
-User response มีเฉพาะ id/email_address/role ไม่ส่ง password/password_digest หรือข้อมูล session การ update ที่ไม่ส่ง password จะคงรหัสเดิม; ถ้าเปลี่ยนรหัสให้ส่ง password และ password_confirmation
+User response มีเฉพาะ id/email/role ไม่ส่ง password/encrypted_password `role` เป็น `customer` หรือ `admin` (เก็บด้วย Rolify) รหัสผ่านยาว 8–72 ตัวอักษร การ update ที่ไม่ส่ง password จะคงรหัสเดิม; ถ้าเปลี่ยนรหัสให้ส่ง password และ password_confirmation
 
 ## Errors
 
@@ -88,4 +88,4 @@ JSON รูปแบบ `{ "errors": ["ข้อความ"] }`
 - 422: validation ไม่ผ่าน (รวมถึง category_id หรือ market_ids อ้างอิงข้อมูลที่ไม่มีอยู่) หรือ CSRF token ไม่ถูกต้อง
 - 429: ลอง Login เกินกำหนด
 
-ลบ Category ที่มี Book ไม่ได้ (422); ลบ Market ลบเฉพาะแถวเชื่อมและเก็บ Book ไว้; ลบ User จะลบ sessions ของบัญชีนั้นด้วย; admin ลบบัญชีตัวเองหรือเปลี่ยน role ตัวเองเป็น customer ไม่ได้ (422) เพื่อให้ระบบมี admin เหลืออยู่เสมอ
+ลบ Category ที่มี Book ไม่ได้ (422); ลบ Market ลบเฉพาะแถวเชื่อมและเก็บ Book ไว้; admin ลบบัญชีตัวเองหรือเปลี่ยน role ตัวเองเป็น customer ไม่ได้ (422) เพื่อให้ระบบมี admin เหลืออยู่เสมอ
