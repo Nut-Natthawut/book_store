@@ -1,0 +1,36 @@
+<% content_for :title, "บัญชีของฉัน | Book Store" %>
+
+<main class="login">
+  <h1>บัญชีของฉัน</h1>
+  <%= tag.p flash[:notice], role: "status", class: "notice" if flash[:notice] %>
+
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+
+    <div class="field">
+      <%= f.label :email, "อีเมล" %>
+      <%= f.email_field :email, required: true, autocomplete: "email" %>
+    </div>
+
+    <div class="field">
+      <%= f.label :password, "รหัสผ่านใหม่" %>
+      <p class="hint">เว้นว่างถ้าไม่ต้องการเปลี่ยน</p>
+      <%= f.password_field :password, autocomplete: "new-password", maxlength: 72 %>
+    </div>
+
+    <div class="field">
+      <%= f.label :password_confirmation, "ยืนยันรหัสผ่านใหม่" %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", maxlength: 72 %>
+    </div>
+
+    <div class="field">
+      <%= f.label :current_password, "รหัสผ่านปัจจุบัน" %>
+      <p class="hint">ต้องกรอกเพื่อยืนยันการแก้ไข</p>
+      <%= f.password_field :current_password, required: true, autocomplete: "current-password", maxlength: 72 %>
+    </div>
+
+    <%= f.submit "บันทึก", data: { turbo_submits_with: "กำลังบันทึก…" } %>
+  <% end %>
+
+  <%= link_to "กลับหน้าหนังสือ", root_path %>
+</main>

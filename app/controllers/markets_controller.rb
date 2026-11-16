@@ -1,4 +1,5 @@
 class MarketsController < ApplicationController
+  before_action :authenticate_user!
   before_action :require_admin
   before_action :find_market, only: [ :edit, :update, :destroy ]
 

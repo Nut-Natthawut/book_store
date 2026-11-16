@@ -1,27 +1,28 @@
-# ข้อมูลสมมติสำหรับ local development
+# ข้อมูลสมมติสำหรับ local development เท่านั้น
+abort "db:seed ใช้ได้เฉพาะ development" unless Rails.env.development?
+
+# อีเมลและรหัสผ่านอ่านจาก ENV (ไฟล์ .env) ห้าม hardcode ไว้ในโค้ด ดูตัวอย่างใน .env.example
 users = [
-  { email_address: "admin@example.com", role: "admin" },
-  { email_address: "user@example.com", role: "customer" }
+  { email: ENV.fetch("ADMIN_EMAIL"), password: ENV.fetch("ADMIN_PASSWORD"), role: "admin" },
+  { email: ENV.fetch("CUSTOMER_EMAIL"), password: ENV.fetch("CUSTOMER_PASSWORD"), role: "customer" }
 ]
 
 # ตรวจบัญชีเดิมก่อนสร้างข้อมูล ไม่เปลี่ยน role หรือรหัสผ่านเดิม
 users.each do |attributes|
-  user = User.find_by(email_address: attributes[:email_address])
+  user = User.find_by(email: attributes[:email])
   if user && user.role != attributes[:role]
-    abort "บัญชี #{user.email_address} มี role ไม่ตรงกับ seed กรุณาตรวจสอบก่อน"
+    abort "บัญชี #{user.email} มี role ไม่ตรงกับ seed กรุณาตรวจสอบก่อน"
   end
 end
 
 users.each do |attributes|
-  user = User.find_or_initialize_by(email_address: attributes[:email_address])
+  user = User.find_or_initialize_by(email: attributes[:email])
 
   if user.persisted?
-    puts "มีบัญชี #{user.email_address} แล้ว ไม่เปลี่ยนข้อมูลเดิม"
+    puts "มีบัญชี #{user.email} แล้ว ไม่เปลี่ยนข้อมูลเดิม"
   else
-    user.assign_attributes(attributes)
-    user.password = "1234"
-    user.save!
-    puts "สร้าง #{user.role}: #{user.email_address} / Password: 1234"
+    user.update!(attributes)
+    puts "สร้าง #{user.role}: #{user.email}"
   end
 end
 

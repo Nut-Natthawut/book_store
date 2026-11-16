@@ -20,7 +20,7 @@ runtime:
       test("HTTP 200", function () {
         expect(res.status).to.equal(200);
       });
-      test("No password fields", function () { expect(res.body).to.have.all.keys("id", "email_address", "role"); });
+      test("No password fields", function () { expect(res.body).to.have.all.keys("id", "email", "role"); });
 settings:
   encodeUrl: true
   timeout: 0

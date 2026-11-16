@@ -18,9 +18,9 @@ http:
     data: |-
       {
         "user": {
-          "email_address": "narin.reader@example.com",
-          "password": "1234",
-          "password_confirmation": "1234",
+          "email": "narin.reader@example.com",
+          "password": "{{test_user_password}}",
+          "password_confirmation": "{{test_user_password}}",
           "role": "customer"
         }
       }
@@ -37,7 +37,7 @@ runtime:
       test("HTTP 201", function () {
         expect(res.status).to.equal(201);
       });
-      test("No password fields", function () { expect(res.body).to.have.all.keys("id", "email_address", "role"); });
+      test("No password fields", function () { expect(res.body).to.have.all.keys("id", "email", "role"); });
       test("Correct role", function () { expect(res.body.role).to.equal("customer"); });
 settings:
   encodeUrl: true

@@ -18,9 +18,9 @@ http:
     data: |-
       {
         "user": {
-          "email_address": "narin.reader@example.com",
-          "password": "1234",
-          "password_confirmation": "1234",
+          "email": "narin.reader@example.com",
+          "password": "{{test_user_password}}",
+          "password_confirmation": "{{test_user_password}}",
           "role": "customer"
         }
       }

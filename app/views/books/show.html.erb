@@ -12,7 +12,7 @@
   <% if @book.markets.empty? %>
     <p>ยังไม่ได้ระบุร้าน</p>
   <% end %>
-  <% if authenticated? && Current.user.admin? %>
+  <% if current_user&.admin? %>
     <%= render "actions", book: @book %>
   <% end %>
   <%= link_to "กลับหน้ารายการ", root_path %>

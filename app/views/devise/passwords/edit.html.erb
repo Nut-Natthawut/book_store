@@ -1,0 +1,27 @@
+<% content_for :title, "ตั้งรหัสผ่านใหม่ | Book Store" %>
+
+<main class="login">
+  <h1>ตั้งรหัสผ่านใหม่</h1>
+
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+    <%= f.hidden_field :reset_password_token %>
+
+    <div class="field">
+      <%= f.label :password, "รหัสผ่านใหม่" %>
+      <% if @minimum_password_length %>
+        <p class="hint">อย่างน้อย <%= @minimum_password_length %> ตัวอักษร</p>
+      <% end %>
+      <%= f.password_field :password, required: true, autofocus: true, autocomplete: "new-password", maxlength: 72 %>
+    </div>
+
+    <div class="field">
+      <%= f.label :password_confirmation, "ยืนยันรหัสผ่านใหม่" %>
+      <%= f.password_field :password_confirmation, required: true, autocomplete: "new-password", maxlength: 72 %>
+    </div>
+
+    <%= f.submit "บันทึกรหัสผ่าน", data: { turbo_submits_with: "กำลังบันทึก…" } %>
+  <% end %>
+
+  <%= render "devise/shared/links" %>
+</main>

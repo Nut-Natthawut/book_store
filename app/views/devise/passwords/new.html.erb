@@ -1,0 +1,18 @@
+<% content_for :title, "ลืมรหัสผ่าน | Book Store" %>
+
+<main class="login">
+  <h1>ลืมรหัสผ่าน</h1>
+
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+
+    <div class="field">
+      <%= f.label :email, "อีเมล" %>
+      <%= f.email_field :email, required: true, autofocus: true, autocomplete: "email" %>
+    </div>
+
+    <%= f.submit "ส่งลิงก์ตั้งรหัสผ่านใหม่", data: { turbo_submits_with: "กำลังส่ง…" } %>
+  <% end %>
+
+  <%= render "devise/shared/links" %>
+</main>

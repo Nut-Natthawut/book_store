@@ -17,6 +17,10 @@ runtime:
       if (res.status === 200) {
         bru.setVar("csrf_token", res.body.csrf_token);
       }
+      // รหัสผ่านสุ่มสำหรับบัญชีทดสอบที่โฟลเดอร์ 04 User สร้าง (ไม่ hardcode รหัสผ่าน)
+      if (!bru.getVar("test_user_password")) {
+        bru.setVar("test_user_password", "T" + Math.random().toString(36).slice(2) + Date.now().toString(36));
+      }
   - type: tests
     code: |-
       test("HTTP 200", function () {

@@ -1,5 +1,5 @@
 class BooksController < ApplicationController
-  allow_unauthenticated_access only: [ :index, :show ]
+  before_action :authenticate_user!, except: [ :index, :show ]
   before_action :require_admin, except: [ :index, :show ]
   before_action :find_book, only: [ :show, :edit, :update, :destroy ]
   before_action :load_categories, only: [ :new, :create, :edit, :update ]

@@ -17,8 +17,8 @@ http:
     type: json
     data: |-
       {
-        "email_address": "user@example.com",
-        "password": "1234"
+        "email": "{{process.env.CUSTOMER_EMAIL}}",
+        "password": "{{process.env.CUSTOMER_PASSWORD}}"
       }
   auth: inherit
 runtime:

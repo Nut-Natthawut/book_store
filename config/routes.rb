@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
+  devise_for :users
   root "books#index"
 
-  resource :session
   resources :books
   resources :categories, except: [ :show ]
   resources :markets, except: [ :show ]

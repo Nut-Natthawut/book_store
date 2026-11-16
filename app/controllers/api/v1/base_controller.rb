@@ -1,5 +1,6 @@
 class Api::V1::BaseController < ApplicationController
   before_action :disable_response_cache
+  before_action :require_login
 
   rescue_from ActiveRecord::RecordNotFound do
     render json: { errors: [ "ไม่พบข้อมูล" ] }, status: :not_found
@@ -15,17 +16,17 @@ class Api::V1::BaseController < ApplicationController
 
   private
 
-  def request_authentication
-    render json: { errors: [ "กรุณาเข้าสู่ระบบ" ] }, status: :unauthorized
+  def disable_response_cache
+    response.headers["Cache-Control"] = "no-store"
+  end
+
+  def require_login
+    render json: { errors: [ "กรุณาเข้าสู่ระบบ" ] }, status: :unauthorized unless user_signed_in?
   end
 
   def require_admin
-    unless Current.user&.admin?
+    unless current_user.admin?
       render json: { errors: [ "เฉพาะ admin เท่านั้น" ] }, status: :forbidden
     end
-  end
-
-  def disable_response_cache
-    response.headers["Cache-Control"] = "no-store"
   end
 end

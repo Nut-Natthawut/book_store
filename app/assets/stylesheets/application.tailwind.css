@@ -100,6 +100,10 @@ a:focus-visible, input:focus-visible, button:focus-visible, textarea:focus-visib
 .alert { color: #8b2929; background: #fff5f4; border-color: #e5bfba; }
 .notice { color: #28543b; background: #f0f7f1; border-color: #b8d2bd; }
 .alert ul { padding-left: 20px; list-style: disc; }
+.field .hint { margin: -4px 0 8px; color: var(--muted); font-size: 14px; }
+.field.checkbox { display: flex; align-items: center; gap: 8px; }
+.field.checkbox input { width: 20px; min-height: 20px; }
+.field.checkbox label { margin: 0; }
 
 .book { padding: 24px 0; border-bottom: 1px solid var(--border); }
 .book:last-of-type { border-bottom: 0; }

@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  before_action :authenticate_user!
   before_action :require_admin
 
   def new
@@ -18,6 +19,6 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.expect(user: [ :email_address, :password, :password_confirmation, :role ])
+    params.expect(user: [ :email, :password, :password_confirmation, :role ])
   end
 end

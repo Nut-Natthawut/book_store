@@ -1,0 +1,10 @@
+<% if resource.errors.any? %>
+  <div class="alert" role="alert">
+    <p>บันทึกไม่ได้ กรุณาตรวจสอบข้อมูล:</p>
+    <ul>
+      <% resource.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

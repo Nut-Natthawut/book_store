@@ -44,22 +44,22 @@ class Api::V1::UsersController < Api::V1::BaseController
   def prevent_self_demotion
     role = user_params[:role]
 
-    if @user == Current.user && role.present? && role != "admin"
+    if @user == current_user && role.present? && role != "admin"
       render json: { errors: [ "ไม่สามารถลดสิทธิ์บัญชีของตัวเองได้" ] }, status: :unprocessable_entity
     end
   end
 
   def prevent_self_deletion
-    if @user == Current.user
+    if @user == current_user
       render json: { errors: [ "ไม่สามารถลบบัญชีของตัวเองได้" ] }, status: :unprocessable_entity
     end
   end
 
   def user_json(user)
-    user.as_json(only: [ :id, :email_address, :role ])
+    user.as_json(only: [ :id, :email, :role ])
   end
 
   def user_params
-    params.expect(user: [ :email_address, :password, :password_confirmation, :role ])
+    params.expect(user: [ :email, :password, :password_confirmation, :role ])
   end
 end
