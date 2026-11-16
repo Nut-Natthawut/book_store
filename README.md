@@ -18,7 +18,13 @@
 - เพิ่ม แก้ไข ลบ ร้าน (Market, many-to-many กับ Book)
 - สร้าง แก้ไข ลบ ผู้ใช้ และกำหนด role (admin ลบหรือลดสิทธิ์ตัวเองไม่ได้)
 
+**API**
+- JSON API ที่ `/api/v1` สำหรับ Book, Category, Market และ User ดูรายละเอียดใน [docs/API.md](docs/API.md)
+- ชุดทดสอบ Bruno 54 requests ครอบคลุมทุก API ทั้งเคสสำเร็จและเคส error ดู [API-bruno/README.md](API-bruno/README.md)
+
 ## ระบบสิทธิ์ (4 gem)
+
+อธิบายทีละ gem ว่าแก้ไฟล์ไหน เพราะอะไร และวิธีทดสอบ ใน **[docs/gems.md](docs/gems.md)**
 
 | Gem | หน้าที่ในโปรเจกต์นี้ | ไฟล์หลัก |
 |---|---|---|
@@ -34,10 +40,6 @@
 | เพิ่ม แก้ ลบ หนังสือ / หมวด / ร้าน | ❌ | ❌ | ✅ |
 | จัดการผู้ใช้ | ❌ | ❌ | ✅ |
 | เข้า `/admin` | ❌ ไปหน้า Login | ❌ redirect พร้อม alert | ✅ |
-
-**API**
-- JSON API ที่ `/api/v1` สำหรับ Book, Category, Market และ User ดูรายละเอียดใน [docs/API.md](docs/API.md)
-- ชุดทดสอบ Bruno 54 requests ครอบคลุมทุก API ทั้งเคสสำเร็จและเคส error ดู [API-bruno/README.md](API-bruno/README.md)
 
 ## เทคโนโลยี
 
@@ -203,6 +205,7 @@ bin/brakeman            # ตรวจช่องโหว่ด้านคว
 |---|---|
 | `docker compose up` ขึ้น `ไม่พบไฟล์ .env` | ยังไม่ได้ `cp .env.example .env` |
 | `ยังไม่ได้ตั้งค่า ADMIN_PASSWORD ...` ตอน seed | ใส่ค่าใน `.env` ให้ครบ แล้วรัน `bin/rails db:seed` (Docker: `docker compose exec web bin/rails db:seed`) |
+| เปิดเว็บได้แต่ไม่มีหนังสือ / ล็อกอินไม่ได้ | seed รอบแรกไม่สำเร็จ (เช่น รหัสใน `.env` สั้นกว่า 8 ตัว) container จะไม่รัน seed ซ้ำเองเพราะฐานข้อมูลมีแล้ว แก้ `.env` แล้วรัน `docker compose exec web bin/rails db:seed` |
 | หน้า `/admin` ไม่มีสไตล์ | ยังไม่ได้ build CSS ของ admin รัน `bun run build:css:admin` หรือเช็คว่า process `css_admin` ใน `bin/dev` รันอยู่ |
 | `connection to server ... failed` ตอน `db:prepare` | PostgreSQL ยังไม่ได้เปิด รัน `brew services start postgresql@16` |
 | `role "..." does not exist` | PostgreSQL ไม่มี user ชื่อเดียวกับ macOS ให้รัน `createuser -s $(whoami)` หรือตั้ง `DATABASE_URL` |
