@@ -7,6 +7,12 @@ if missing.any?
   abort "ยังไม่ได้ตั้งค่า #{missing.join(", ")} ให้คัดลอก .env.example เป็น .env แล้วใส่รหัสผ่าน (อย่างน้อย 8 ตัวอักษร)"
 end
 
+# เช็คความยาวก่อนสร้างอะไร กันไม่ให้ seed สร้างไปครึ่งเดียวแล้วพัง
+too_short = %w[ADMIN_PASSWORD CUSTOMER_PASSWORD].reject { |key| Devise.password_length.cover?(ENV[key].length) }
+if too_short.any?
+  abort "#{too_short.join(", ")} ใน .env ต้องยาว #{Devise.password_length.min}-#{Devise.password_length.max} ตัวอักษร"
+end
+
 users = [
   { email: ENV.fetch("ADMIN_EMAIL"), password: ENV.fetch("ADMIN_PASSWORD"), role: "admin" },
   { email: ENV.fetch("CUSTOMER_EMAIL"), password: ENV.fetch("CUSTOMER_PASSWORD"), role: "customer" }
