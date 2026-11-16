@@ -49,6 +49,7 @@
 | Rails | 8.1 |
 | ฐานข้อมูล | PostgreSQL |
 | Node.js | 26.13.0 |
+| รันโปรเจกต์ | Docker Compose (Rails + PostgreSQL 16 + Mailpit) |
 | JavaScript bundler | esbuild (รันผ่าน Yarn) |
 | CSS | Tailwind CSS 4 (รันผ่าน Bun) แยก build หน้าบ้านกับ ActiveAdmin |
 | Auth / สิทธิ์ | Devise 5, Rolify 6, Pundit 2.5, ActiveAdmin 4.0.0.beta23 |
@@ -84,65 +85,9 @@ docker compose exec web bin/rails console
 docker compose down                          # ปิด (ข้อมูลยังอยู่) เพิ่ม -v ถ้าต้องการล้างฐานข้อมูล
 ```
 
-## ทางเลือก: รันบนเครื่องด้วย bin/dev (ไม่ใช้ Docker)
-
-ต้องติดตั้ง Ruby, Node, Bun และ PostgreSQL เอง ทำขั้น `git clone`, `git switch gem` และสร้าง `.env` ตามหัวข้อด้านบนก่อน แล้วทำต่อดังนี้
-
-### 1. ติดตั้งเครื่องมือที่ต้องใช้
-
-ถ้ายังไม่มี [Homebrew](https://brew.sh) ให้ติดตั้งก่อน แล้วรัน:
-
-```zsh
-brew install mise postgresql@16 oven-sh/bun/bun
-brew services start postgresql@16
-```
-
-- **mise** ใช้ติดตั้ง Ruby และ Node ตามเวอร์ชันที่โปรเจกต์กำหนดใน `mise.toml`
-- **PostgreSQL** คือฐานข้อมูล คำสั่ง `brew services start` เปิดให้ทำงานอยู่เบื้องหลัง
-- **Bun** ใช้ build ไฟล์ CSS
-
-เพิ่ม 2 บรรทัดนี้ใน `~/.zshrc` แล้วเปิด terminal ใหม่:
-
-```zsh
-eval "$(mise activate zsh)"
-export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
-```
-
-- บรรทัดแรกทำให้ใช้ Ruby และ Node ตามเวอร์ชันของโปรเจกต์อัตโนมัติ
-- บรรทัดที่สองให้หาคำสั่งของ PostgreSQL เจอ (Homebrew ไม่ได้ใส่ PATH ให้) ถ้าไม่ใส่ `bundle install` จะติดตั้ง gem `pg` ไม่ผ่าน
-
-### 2. ติดตั้ง Ruby, Node และ dependencies
-
-```zsh
-mise install            # ติดตั้ง Ruby 4.0.9 และ Node 26.13.0
-npm install -g yarn     # ติดตั้ง Yarn
-bundle install          # ติดตั้ง gem ของ Ruby
-yarn install            # ติดตั้ง package ของ JavaScript
-bun install             # ติดตั้ง package สำหรับ build CSS
-```
-
-### 3. สร้างฐานข้อมูลและข้อมูลตัวอย่าง
-
-```zsh
-bin/rails db:prepare    # สร้างฐานข้อมูลและตาราง (มีอยู่แล้วจะรัน migration ที่ค้าง)
-bin/rails db:seed       # ใส่บัญชีผู้ใช้ (จาก .env) หมวดหมู่ ร้าน และหนังสือตัวอย่าง
-```
-
-ค่าเริ่มต้นจะต่อ PostgreSQL ในเครื่องด้วยชื่อผู้ใช้ macOS ของคุณ ถ้า PostgreSQL ของคุณต้องใช้ user หรือรหัสผ่านอื่น ให้ตั้ง `DATABASE_URL` ใน `.env`
-
-### 4. เปิดเว็บ
-
-```zsh
-bin/dev
-```
-
-เปิด http://localhost:3000 ได้เลย `bin/dev` จะเปิด Rails server และคอย build JavaScript, CSS หน้าบ้าน และ CSS ของ ActiveAdmin ใหม่อัตโนมัติเมื่อแก้ไฟล์ กด `Ctrl + C` เพื่อปิด
-
-อีเมลลืมรหัสผ่านถูกส่งไปที่ Mailpit (`localhost:1025`) ถ้าต้องการดูอีเมลให้เปิด Mailpit ด้วย `docker compose up mailpit` แล้วเข้า http://localhost:8025
-
 ## บัญชีสำหรับทดลอง
 
-`bin/rails db:seed` สร้างบัญชีให้ 2 บัญชีตามค่าใน `.env`:
+container รัน seed ให้ตอนเปิดครั้งแรก สร้างบัญชี 2 บัญชีตามค่าใน `.env`:
 
 | ตัวแปรใน .env | Role |
 |---|---|
@@ -155,7 +100,7 @@ seed รันได้เฉพาะ development รันซ้ำได้ �
 - หมวดหมู่ 8 หมวด หมวดละ 5 เล่ม รวม 40 เล่ม
 - ร้าน 3 ร้าน หนังสือแต่ละเล่มอยู่ใน 2 ร้าน
 
-> ถ้าเคยรันโปรเจกต์ก่อน branch นี้ `bin/rails db:migrate` จะย้ายบัญชีเดิมไป Devise และย้าย role เดิมไป Rolify ให้ รหัสผ่านเดิมยังใช้ได้
+> ถ้ามีฐานข้อมูลจากก่อน branch นี้ migration จะย้ายบัญชีเดิมไป Devise และย้าย role เดิมไป Rolify ให้ รหัสผ่านเดิมยังใช้ได้
 
 ## ลองใช้งาน
 
@@ -172,7 +117,7 @@ seed รันได้เฉพาะ development รันซ้ำได้ �
 ### ทดสอบ API ด้วย Bruno
 
 1. ติดตั้ง [Bruno](https://www.usebruno.com)
-2. เปิด `docker compose up` หรือ `bin/dev` ค้างไว้ (Bruno ยิงไปที่ `http://localhost:3000`)
+2. เปิด `docker compose up` ค้างไว้ (Bruno ยิงไปที่ `http://localhost:3000`)
 3. `cp .env API-bruno/collections/test-api/.env` ให้ request Login อ่านอีเมล/รหัสผ่านได้
 4. ใน Bruno กด Open Collection แล้วเลือกโฟลเดอร์ `API-bruno`
 5. คลิกขวาที่ collection **book-store** แล้วเลือก **Run** จะรันทั้ง 54 requests ตามลำดับ
@@ -182,10 +127,10 @@ seed รันได้เฉพาะ development รันซ้ำได้ �
 ## ตรวจคุณภาพโค้ด
 
 ```zsh
-bin/rails test          # test ของ policy, model, หน้าเว็บ, API และ ActiveAdmin
-bin/rubocop             # ตรวจสไตล์โค้ด (กฎ rubocop-rails-omakase)
-bin/rubocop -a          # แก้จุดที่แก้อัตโนมัติได้
-bin/brakeman            # ตรวจช่องโหว่ด้านความปลอดภัย
+docker compose exec web bin/rails test      # test ของ policy, model, หน้าเว็บ, API และ ActiveAdmin
+docker compose exec web bin/rubocop         # ตรวจสไตล์โค้ด (กฎ rubocop-rails-omakase)
+docker compose exec web bin/rubocop -a      # แก้จุดที่แก้อัตโนมัติได้
+docker compose exec web bin/brakeman        # ตรวจช่องโหว่ด้านความปลอดภัย
 ```
 
 แนวทางเขียนโค้ดของโปรเจกต์อยู่ใน [CODING_STANDARDS.md](CODING_STANDARDS.md)
@@ -197,13 +142,13 @@ bin/brakeman            # ตรวจช่องโหว่ด้านคว
 | อาการ | สาเหตุและวิธีแก้ |
 |---|---|
 | `docker compose up` ขึ้น `ไม่พบไฟล์ .env` | ยังไม่ได้ `cp .env.example .env` |
-| `ยังไม่ได้ตั้งค่า ADMIN_PASSWORD ...` ตอน seed | ใส่ค่าใน `.env` ให้ครบ แล้วรัน `bin/rails db:seed` (Docker: `docker compose exec web bin/rails db:seed`) |
+| `ยังไม่ได้ตั้งค่า ADMIN_PASSWORD ...` ตอน seed | ใส่ค่าใน `.env` ให้ครบ แล้วรัน `docker compose exec web bin/rails db:seed` |
 | เปิดเว็บได้แต่ไม่มีหนังสือ / ล็อกอินไม่ได้ | seed รอบแรกไม่สำเร็จ (เช่น รหัสใน `.env` สั้นกว่า 8 ตัว) container จะไม่รัน seed ซ้ำเองเพราะฐานข้อมูลมีแล้ว แก้ `.env` แล้วรัน `docker compose exec web bin/rails db:seed` |
-| หน้า `/admin` ไม่มีสไตล์ | ยังไม่ได้ build CSS ของ admin รัน `bun run build:css:admin` หรือเช็คว่า process `css_admin` ใน `bin/dev` รันอยู่ |
-| `connection to server ... failed` ตอน `db:prepare` | PostgreSQL ยังไม่ได้เปิด รัน `brew services start postgresql@16` |
-| `role "..." does not exist` | PostgreSQL ไม่มี user ชื่อเดียวกับ macOS ให้รัน `createuser -s $(whoami)` หรือตั้ง `DATABASE_URL` |
-| Bruno ขึ้น `request failed` ทุกข้อ | ยังไม่ได้เปิด `bin/dev` |
+| หน้า `/admin` ไม่มีสไตล์ | ดู log ว่า process `css_admin` รันอยู่ (`docker compose logs web`) หรือ build เองด้วย `docker compose exec web bun run build:css:admin` |
+| `service "web" is not running` | ยังไม่ได้ `docker compose up` หรือ container หยุดเพราะ error ดูสาเหตุด้วย `docker compose logs web` |
+| `port is already allocated` (3000 หรือ 8025) | มีโปรแกรมอื่นใช้ port อยู่ ปิดโปรแกรมนั้น หรือ `docker compose down` ของโปรเจกต์อื่นก่อน |
+| อยากเริ่มฐานข้อมูลใหม่หมด | `docker compose down -v` แล้ว `docker compose up` (ลบข้อมูลทั้งหมด แล้ว seed ใหม่) |
+| Bruno ขึ้น `request failed` ทุกข้อ | ยังไม่ได้เปิด `docker compose up` |
 | Bruno ข้อ Login ได้ 429 | กด Run ติดกันหลายรอบเกินไป (Login จำกัด 10 ครั้งต่อ 3 นาที) รอสักครู่แล้วรันใหม่ |
 | Bruno ข้อ Login ได้ 401 | ยังไม่ได้คัดลอก `.env` ไปที่ `API-bruno/collections/test-api/.env` |
 | Bruno ข้อ `01 Create` ได้ 422 | รอบก่อนรันไม่จบ ข้อมูลทดสอบยังค้างอยู่ ชื่อหมวดหรือร้านจึงซ้ำ ให้ลบผ่านหน้า Admin แล้วรันใหม่ |
-| Port 3000 ถูกใช้อยู่ | รัน `PORT=3001 bin/dev` แล้วแก้ `base_url` ใน Bruno ให้ตรงกัน |
