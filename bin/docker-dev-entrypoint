@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Entrypoint ของ container web ใน compose.yaml
+# ติดตั้ง dependency ที่ขาด และเตรียมฐานข้อมูลทุกครั้งที่ container เริ่ม
+set -e
+
+bundle check > /dev/null || bundle install
+yarn install --frozen-lockfile --silent
+bun install --frozen-lockfile --silent
+
+# ลบ pid ค้างจากรอบก่อน ไม่งั้น server จะไม่ยอมเริ่ม
+rm -f tmp/pids/server.pid
+
+if [ "$1" = "bin/dev" ]; then
+  bin/rails db:prepare
+fi
+
+exec "$@"

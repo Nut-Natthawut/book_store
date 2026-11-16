@@ -1,0 +1,51 @@
+# Development environment: docker compose up แล้วเปิด http://localhost:3000
+# ไม่ใช้สำหรับ production (production ใช้ Dockerfile + Kamal)
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: postgres://postgres@db:5432
+      BINDING: 0.0.0.0
+      SMTP_ADDRESS: mailpit
+    volumes:
+      - .:/rails
+      - bundle:/usr/local/bundle
+      - node_modules:/rails/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    tty: true
+    stdin_open: true
+
+  db:
+    image: postgres:16
+    environment:
+      # ใช้เฉพาะเครื่อง dev: ไม่เปิด port ออกนอก Docker network จึงไม่ต้องตั้งรหัสผ่าน
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 2s
+      timeout: 5s
+      retries: 15
+
+  # จับอีเมลทุกฉบับ (เช่น ลืมรหัสผ่าน) ดูได้ที่ http://localhost:8025
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - "8025:8025"
+
+volumes:
+  bundle:
+  node_modules:
+  postgres:
