@@ -1,5 +1,9 @@
 <div class="actions">
-  <%= link_to "แก้ไขหนังสือ", edit_book_path(book) %>
-  <%= button_to "ลบหนังสือ", book_path(book), method: :delete, class: "button-danger",
-        form: { data: { turbo_confirm: "ยืนยันการลบหนังสือเล่มนี้?" } } %>
+  <% if policy(book).edit? %>
+    <%= link_to "แก้ไขหนังสือ", edit_book_path(book) %>
+  <% end %>
+  <% if policy(book).destroy? %>
+    <%= button_to "ลบหนังสือ", book_path(book), method: :delete, class: "button-danger",
+          form: { data: { turbo_confirm: "ยืนยันการลบหนังสือเล่มนี้?" } } %>
+  <% end %>
 </div>

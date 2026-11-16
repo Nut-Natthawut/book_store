@@ -1,18 +1,19 @@
 class MarketsController < ApplicationController
   before_action :authenticate_user!
-  before_action :require_admin
   before_action :find_market, only: [ :edit, :update, :destroy ]
+  after_action :verify_authorized
 
   def index
+    authorize Market, :update?
     @markets = Market.order(:name)
   end
 
   def new
-    @market = Market.new
+    @market = authorize Market.new
   end
 
   def create
-    @market = Market.new(market_params)
+    @market = authorize Market.new(market_params)
 
     if @market.save
       redirect_to markets_path, notice: "เพิ่มร้านแล้ว"
@@ -40,7 +41,7 @@ class MarketsController < ApplicationController
   private
 
   def find_market
-    @market = Market.find(params[:id])
+    @market = authorize Market.find(params[:id])
   end
 
   def market_params

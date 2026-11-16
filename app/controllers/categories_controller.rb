@@ -1,18 +1,19 @@
 class CategoriesController < ApplicationController
   before_action :authenticate_user!
-  before_action :require_admin
   before_action :find_category, only: [ :edit, :update, :destroy ]
+  after_action :verify_authorized
 
   def index
+    authorize Category, :update?
     @categories = Category.order(:name)
   end
 
   def new
-    @category = Category.new
+    @category = authorize Category.new
   end
 
   def create
-    @category = Category.new(category_params)
+    @category = authorize Category.new(category_params)
 
     if @category.save
       redirect_to categories_path, notice: "เพิ่มหมวดหมู่แล้ว"
@@ -43,7 +44,7 @@ class CategoriesController < ApplicationController
   private
 
   def find_category
-    @category = Category.find(params[:id])
+    @category = authorize Category.find(params[:id])
   end
 
   def category_params

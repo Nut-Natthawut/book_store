@@ -1,5 +1,6 @@
 class Api::V1::CategoriesController < Api::V1::BaseController
-  before_action :require_admin, except: [ :index, :show ]
+  before_action { authorize Category }
+  after_action :verify_authorized
   before_action :find_category, only: [ :show, :update, :destroy ]
 
   def index

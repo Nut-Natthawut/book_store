@@ -10,6 +10,13 @@ module ActiveSupport
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     fixtures :all
 
-    # Add more helper methods to be used by all tests here...
+    # สร้าง user สำหรับ test ด้วยรหัสผ่านสุ่ม (ไม่ hardcode รหัสผ่าน)
+    def create_user(role: "customer", email: "#{role}-#{SecureRandom.hex(4)}@example.com")
+      User.create!(email: email, password: SecureRandom.hex(12), role: role)
+    end
   end
+end
+
+class ActionDispatch::IntegrationTest
+  include Devise::Test::IntegrationHelpers # ได้ sign_in / sign_out
 end

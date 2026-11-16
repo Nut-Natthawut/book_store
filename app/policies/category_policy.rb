@@ -1,0 +1,2 @@
+class CategoryPolicy < CatalogPolicy
+end

@@ -1,0 +1,2 @@
+class BookPolicy < CatalogPolicy
+end

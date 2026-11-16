@@ -1,6 +1,7 @@
 <main class="page">
   <h1><%= @book.title %></h1>
   <%= tag.p flash[:notice], class: "notice", role: "status" if flash[:notice] %>
+  <%= tag.p flash[:alert], class: "alert", role: "alert" if flash[:alert] %>
   <p>ผู้เขียน: <%= @book.author %></p>
   <p>หมวดหมู่: <%= @book.category.name %></p>
   <p><%= @book.description %></p>
@@ -12,7 +13,7 @@
   <% if @book.markets.empty? %>
     <p>ยังไม่ได้ระบุร้าน</p>
   <% end %>
-  <% if current_user&.admin? %>
+  <% if policy(@book).update? || policy(@book).destroy? %>
     <%= render "actions", book: @book %>
   <% end %>
   <%= link_to "กลับหน้ารายการ", root_path %>

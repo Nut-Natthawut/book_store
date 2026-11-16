@@ -1,5 +1,6 @@
 class Api::V1::MarketsController < Api::V1::BaseController
-  before_action :require_admin, except: [ :index, :show ]
+  before_action { authorize Market }
+  after_action :verify_authorized
   before_action :find_market, only: [ :show, :update, :destroy ]
 
   def index

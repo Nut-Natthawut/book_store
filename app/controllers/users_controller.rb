@@ -1,13 +1,13 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!
-  before_action :require_admin
+  after_action :verify_authorized
 
   def new
-    @user = User.new
+    @user = authorize User.new
   end
 
   def create
-    @user = User.new(user_params)
+    @user = authorize User.new(user_params)
 
     if @user.save
       redirect_to new_user_path, notice: "สร้างผู้ใช้แล้ว"

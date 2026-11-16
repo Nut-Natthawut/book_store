@@ -1,8 +1,9 @@
 class AdminController < ApplicationController
   before_action :authenticate_user!
-  before_action :require_admin
+  after_action :verify_authorized
 
   def show
+    authorize Book, :update?
     @books = Book.includes(:category).order(:title)
   end
 end

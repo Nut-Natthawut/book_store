@@ -1,11 +1,12 @@
 class BooksController < ApplicationController
   before_action :authenticate_user!, except: [ :index, :show ]
-  before_action :require_admin, except: [ :index, :show ]
   before_action :find_book, only: [ :show, :edit, :update, :destroy ]
+  after_action :verify_authorized
   before_action :load_categories, only: [ :new, :create, :edit, :update ]
   before_action :load_markets, only: [ :new, :create, :edit, :update ]
 
   def index
+    authorize Book
     @categories = Category.order(:name)
     @category_id = params[:category_id].presence
     @query = params[:q].to_s.strip
@@ -22,11 +23,11 @@ class BooksController < ApplicationController
   end
 
   def new
-    @book = Book.new
+    @book = authorize Book.new
   end
 
   def create
-    @book = Book.new(book_params)
+    @book = authorize Book.new(book_params)
 
     if @book.save
       redirect_to @book, notice: "เพิ่มหนังสือแล้ว"
@@ -54,7 +55,7 @@ class BooksController < ApplicationController
   private
 
   def find_book
-    @book = Book.find(params[:id])
+    @book = authorize Book.find(params[:id])
   end
 
   def load_categories

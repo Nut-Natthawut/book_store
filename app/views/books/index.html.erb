@@ -1,12 +1,15 @@
 <main class="page">
   <h1>หนังสือทั้งหมด</h1>
   <%= tag.p flash[:notice], class: "notice", role: "status" if flash[:notice] %>
+  <%= tag.p flash[:alert], class: "alert", role: "alert" if flash[:alert] %>
 
   <nav class="account-navigation" aria-label="บัญชีผู้ใช้">
     <% if user_signed_in? %>
       <p><%= current_user.email %></p>
       <% if current_user.admin? %>
         <%= link_to "หน้าจัดการ Admin", admin_path %>
+      <% end %>
+      <% if policy(Book).create? %>
         <%= link_to "เพิ่มหนังสือ", new_book_path %>
       <% end %>
       <%= link_to "บัญชีของฉัน", edit_user_registration_path %>

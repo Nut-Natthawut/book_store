@@ -10,6 +10,10 @@ class Api::V1::BaseController < ApplicationController
     render json: { errors: [ error.message ] }, status: :bad_request
   end
 
+  rescue_from Pundit::NotAuthorizedError do
+    render json: { errors: [ "เฉพาะ admin เท่านั้น" ] }, status: :forbidden
+  end
+
   rescue_from ActionController::InvalidAuthenticityToken do
     render json: { errors: [ "CSRF token ไม่ถูกต้อง" ] }, status: :unprocessable_entity
   end
@@ -22,11 +26,5 @@ class Api::V1::BaseController < ApplicationController
 
   def require_login
     render json: { errors: [ "กรุณาเข้าสู่ระบบ" ] }, status: :unauthorized unless user_signed_in?
-  end
-
-  def require_admin
-    unless current_user.admin?
-      render json: { errors: [ "เฉพาะ admin เท่านั้น" ] }, status: :forbidden
-    end
   end
 end

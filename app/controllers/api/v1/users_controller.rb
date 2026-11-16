@@ -1,5 +1,6 @@
 class Api::V1::UsersController < Api::V1::BaseController
-  before_action :require_admin
+  before_action { authorize User }
+  after_action :verify_authorized
   before_action :find_user, only: [ :show, :update, :destroy ]
   before_action :prevent_self_demotion, only: :update
   before_action :prevent_self_deletion, only: :destroy
