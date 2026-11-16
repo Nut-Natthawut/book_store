@@ -56,7 +56,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   def user_json(user)
-    user.as_json(only: [ :id, :email, :role ])
+    user.as_json(only: [ :id, :email ], methods: :role)
   end
 
   def user_params

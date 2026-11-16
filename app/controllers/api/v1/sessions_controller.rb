@@ -13,7 +13,7 @@ class Api::V1::SessionsController < Api::V1::BaseController
     if user&.valid_password?(params[:password])
       sign_in(user)
       render json: {
-        user: user.as_json(only: [ :id, :email, :role ]),
+        user: user.as_json(only: [ :id, :email ], methods: :role),
         csrf_token: form_authenticity_token
       }
     else
