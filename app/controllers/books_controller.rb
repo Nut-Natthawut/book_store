@@ -1,17 +1,18 @@
 class BooksController < ApplicationController
   before_action :authenticate_user!, except: [ :index, :show ]
   before_action :find_book, only: [ :show, :edit, :update, :destroy ]
-  after_action :verify_authorized
+  # กันลืม: action ไหนไม่เรียก authorize / policy_scope จะ raise error ทันที
+  after_action :verify_authorized, except: :index
+  after_action :verify_policy_scoped, only: :index
   before_action :load_categories, only: [ :new, :create, :edit, :update ]
   before_action :load_markets, only: [ :new, :create, :edit, :update ]
 
   def index
-    authorize Book
     @categories = Category.order(:name)
     @category_id = params[:category_id].presence
     @query = params[:q].to_s.strip
 
-    @books = Book.order(:title)
+    @books = policy_scope(Book).order(:title)
     @books = @books.where(category_id: @category_id) if @category_id.present?
 
     if @query.present?

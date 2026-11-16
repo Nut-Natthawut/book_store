@@ -8,6 +8,15 @@ class BookPolicyTest < ActiveSupport::TestCase
     end
   end
 
+  test "everyone sees every book in the scope" do
+    category = Category.create!(name: "Scope test")
+    book = Book.create!(title: "T", author: "A", description: "D", price: 10, category: category)
+
+    [ nil, create_user, create_user(role: "admin") ].each do |user|
+      assert_includes BookPolicy::Scope.new(user, Book).resolve, book
+    end
+  end
+
   test "only admin can create, update and destroy books" do
     admin = create_user(role: "admin")
 

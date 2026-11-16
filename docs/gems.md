@@ -206,11 +206,24 @@ bin/rails g pundit:install   # ได้ app/policies/application_policy.rb
 | ไฟล์ | กติกา |
 |---|---|
 | `application_policy.rb` | ค่าเริ่มต้นปฏิเสธทุกอย่าง มี helper `admin?` |
-| `catalog_policy.rb` | ทุกคนดูได้ (`index?`, `show?`) เฉพาะ admin `create?` / `update?` / `destroy?` |
+| `catalog_policy.rb` | ทุกคนดูได้ (`index?`, `show?`) เฉพาะ admin `create?` / `update?` / `destroy?` และมี `Scope` (ดูด้านล่าง) |
 | `book_policy.rb`, `category_policy.rb`, `market_policy.rb` | สืบทอด `CatalogPolicy` (กติกาเหมือนกัน) |
 | `user_policy.rb` | ทุก action เฉพาะ admin |
 
 > 💡 `new?` เรียก `create?` และ `edit?` เรียก `update?` ให้อยู่แล้ว เขียนแค่ `create?` / `update?` ก็พอ
+
+**Scope** ตอบคำถาม "user คนนี้มองเห็น record ไหนบ้าง" ใช้กับหน้ารายการ (index)
+ร้านเราทุกคนเห็นหนังสือทุกเล่ม จึงคืน `scope.all` ถ้าวันหน้ามีกฎเช่น "ซ่อนหนังสือที่ยังไม่วางขาย" ก็แก้ที่นี่ที่เดียว:
+
+```ruby
+class CatalogPolicy < ApplicationPolicy
+  class Scope < ApplicationPolicy::Scope
+    def resolve
+      scope.all
+    end
+  end
+end
+```
 
 ### 3.3 Controller
 
@@ -228,7 +241,13 @@ end
 `app/controllers/books_controller.rb`:
 
 ```ruby
-after_action :verify_authorized   # กันลืม: action ไหนไม่เรียก authorize จะ error
+# กันลืม: action ไหนไม่เรียก authorize / policy_scope จะ raise error ทันที
+after_action :verify_authorized, except: :index
+after_action :verify_policy_scoped, only: :index
+
+def index
+  @books = policy_scope(Book).order(:title) # เรียก BookPolicy::Scope#resolve ได้เฉพาะหนังสือที่มองเห็นได้
+end
 
 def new
   @book = authorize Book.new       # เรียก BookPolicy#new? ถ้าได้ false → NotAuthorizedError
@@ -370,7 +389,7 @@ Test ของแต่ละส่วน (`bin/rails test` หรือ `docker
 | ไฟล์ | ทดสอบอะไร |
 |---|---|
 | `test/models/user_test.rb` | role เริ่มต้น, เปลี่ยน role, role ผิดไม่ทำให้ role เดิมหาย (Rolify) |
-| `test/policies/` | กติกาของ `BookPolicy` และ `UserPolicy` (Pundit) |
+| `test/policies/` | กติกาและ Scope ของ `BookPolicy` และ `UserPolicy` (Pundit) |
 | `test/integration/books_authorization_test.rb` | guest / customer / admin ในหน้าร้าน (Devise + Pundit) |
 | `test/integration/api_authorization_test.rb` | API ได้ 401 / 403 / 201 และ login คืน role |
 | `test/integration/admin_access_test.rb` | `/admin` ทุกหน้าและทุกฟอร์ม, admin ลบหรือลดสิทธิ์ตัวเองไม่ได้ |
