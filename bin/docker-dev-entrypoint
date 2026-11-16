@@ -16,6 +16,8 @@ if [ "$1" = "bin/dev" ]; then
     exit 1
   fi
   bin/rails db:prepare
+  # เตรียมฐานข้อมูล test ไว้ด้วย ให้ docker compose exec web bin/rails test รันได้ทันที
+  RAILS_ENV=test bin/rails db:prepare
 fi
 
 exec "$@"

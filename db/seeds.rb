@@ -1,5 +1,9 @@
 # ข้อมูลสมมติสำหรับ local development เท่านั้น
-abort "db:seed ใช้ได้เฉพาะ development" unless Rails.env.development?
+# environment อื่น (test, production) ข้ามไป ไม่สร้างข้อมูลสมมติ
+unless Rails.env.development?
+  puts "ข้าม db:seed: ใช้ได้เฉพาะ development"
+  return
+end
 
 # อีเมลและรหัสผ่านอ่านจาก ENV (ไฟล์ .env) ห้าม hardcode ไว้ในโค้ด ดูตัวอย่างใน .env.example
 missing = %w[ADMIN_EMAIL ADMIN_PASSWORD CUSTOMER_EMAIL CUSTOMER_PASSWORD].select { |key| ENV[key].blank? }
