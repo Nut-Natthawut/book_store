@@ -53,18 +53,7 @@
 | CSS | Tailwind CSS 4 (รันผ่าน Bun) แยก build หน้าบ้านกับ ActiveAdmin |
 | Auth / สิทธิ์ | Devise 5, Rolify 6, Pundit 2.5, ActiveAdmin 4.0.0.beta23 |
 
-## ตั้งค่าบัญชี seed (ทำก่อนเสมอ)
-
-อีเมลและรหัสผ่านของบัญชีตัวอย่างไม่ได้เขียนไว้ในโค้ด ให้สร้างไฟล์ `.env` จากตัวอย่างแล้วตั้งรหัสผ่านเอง (อย่างน้อย 8 ตัวอักษร):
-
-```zsh
-cp .env.example .env
-# แก้ .env ใส่ ADMIN_PASSWORD และ CUSTOMER_PASSWORD
-```
-
-`.env` ถูก ignore ไม่ถูก commit ห้ามใส่รหัสผ่านจริงลงไฟล์อื่นที่ commit
-
-## วิธีที่ 1: Docker Compose (แนะนำสำหรับคนตรวจงาน)
+## ติดตั้งและเปิดใช้งาน (Docker)
 
 ต้องมีแค่ [Docker Desktop](https://www.docker.com/products/docker-desktop/) ไม่ต้องติดตั้ง Ruby, Node, Bun หรือ PostgreSQL
 
@@ -72,9 +61,11 @@ cp .env.example .env
 git clone https://github.com/Nut-Natthawut/book_store.git
 cd book_store
 git switch gem
-cp .env.example .env    # แล้วใส่รหัสผ่าน
+cp .env.example .env
 docker compose up
 ```
+
+ก่อน `docker compose up` ให้เปิด `.env` แล้วใส่ `ADMIN_PASSWORD` และ `CUSTOMER_PASSWORD` (อย่างน้อย 8 ตัวอักษร) อีเมลและรหัสผ่านของบัญชีตัวอย่างไม่ได้เขียนไว้ในโค้ด และ `.env` ถูก ignore ไม่ถูก commit
 
 ครั้งแรกจะ build image และติดตั้ง gem/package ประมาณ 2–5 นาที เมื่อเห็น `Listening on http://0.0.0.0:3000` แล้ว:
 
@@ -93,7 +84,9 @@ docker compose exec web bin/rails console
 docker compose down                          # ปิด (ข้อมูลยังอยู่) เพิ่ม -v ถ้าต้องการล้างฐานข้อมูล
 ```
 
-## วิธีที่ 2: bin/dev บนเครื่อง (macOS)
+## ทางเลือก: รันบนเครื่องด้วย bin/dev (ไม่ใช้ Docker)
+
+ต้องติดตั้ง Ruby, Node, Bun และ PostgreSQL เอง ทำขั้น `git clone`, `git switch gem` และสร้าง `.env` ตามหัวข้อด้านบนก่อน แล้วทำต่อดังนี้
 
 ### 1. ติดตั้งเครื่องมือที่ต้องใช้
 
