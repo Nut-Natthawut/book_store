@@ -58,15 +58,29 @@
 
 ต้องมีแค่ [Docker Desktop](https://www.docker.com/products/docker-desktop/) ไม่ต้องติดตั้ง Ruby, Node, Bun หรือ PostgreSQL
 
-```zsh
-git clone https://github.com/Nut-Natthawut/book_store.git
-cd book_store
-git switch gem
-cp .env.example .env
-docker compose up
-```
+1. Clone และสร้างไฟล์ `.env`
 
-ก่อน `docker compose up` ให้เปิด `.env` แล้วใส่ `ADMIN_PASSWORD` และ `CUSTOMER_PASSWORD` (อย่างน้อย 8 ตัวอักษร) อีเมลและรหัสผ่านของบัญชีตัวอย่างไม่ได้เขียนไว้ในโค้ด และ `.env` ถูก ignore ไม่ถูก commit
+   ```zsh
+   git clone https://github.com/Nut-Natthawut/book_store.git
+   cd book_store
+   git switch gem
+   cp .env.example .env
+   ```
+
+2. เปิด `.env` แล้วตั้งรหัสผ่านเอง (อย่างน้อย 8 ตัวอักษร) รหัสนี้ใช้ login ในขั้นต่อไป
+
+   ```
+   ADMIN_PASSWORD=ตั้งเอง
+   CUSTOMER_PASSWORD=ตั้งเอง
+   ```
+
+   รหัสผ่านไม่ได้เขียนไว้ในโค้ด และ `.env` ถูก ignore ไม่ถูก commit
+
+3. เปิดโปรเจกต์
+
+   ```zsh
+   docker compose up
+   ```
 
 ครั้งแรกจะ build image และติดตั้ง gem/package ประมาณ 2–5 นาที เมื่อเห็น `Listening on http://0.0.0.0:3000` แล้ว:
 
@@ -87,12 +101,14 @@ docker compose down                          # ปิด (ข้อมูลย�
 
 ## บัญชีสำหรับทดลอง
 
-container รัน seed ให้ตอนเปิดครั้งแรก สร้างบัญชี 2 บัญชีตามค่าใน `.env`:
+container รัน seed ให้ตอนเปิดครั้งแรก สร้างบัญชี 2 บัญชี:
 
-| ตัวแปรใน .env | Role |
-|---|---|
-| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | admin |
-| `CUSTOMER_EMAIL` / `CUSTOMER_PASSWORD` | customer |
+| อีเมล | รหัสผ่าน | Role |
+|---|---|---|
+| `admin@example.com` | ค่า `ADMIN_PASSWORD` ที่ตั้งใน `.env` (ขั้นที่ 2) | admin |
+| `user@example.com` | ค่า `CUSTOMER_PASSWORD` ที่ตั้งใน `.env` (ขั้นที่ 2) | customer |
+
+อีเมลเปลี่ยนได้ที่ `ADMIN_EMAIL` / `CUSTOMER_EMAIL` ใน `.env`
 
 seed รันได้เฉพาะ development รันซ้ำได้ ระบบจะไม่สร้างข้อมูลซ้ำ และไม่เปลี่ยนรหัสผ่านหรือ role ของบัญชีที่มีอยู่แล้ว สมัครบัญชี customer เพิ่มเองได้ที่หน้า "สมัครสมาชิก"
 
